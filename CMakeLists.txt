@@ -25,5 +25,5 @@ add_subdirectory(lib)
 add_library(CFHE ${SOURCE_FILES})
 target_link_libraries(CFHE HElib NTL -lgmp -pthread -lgf2x -lm -O2)
 
-add_executable(test_Add test/addTest.cpp)
-target_link_libraries(test_Add CFHE -pthread)
+add_executable(test_Arithmetic test/arithmeticTest.cpp)
+target_link_libraries(test_Arithmetic CFHE -pthread)

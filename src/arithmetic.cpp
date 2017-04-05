@@ -4,13 +4,15 @@ using namespace std;
 using namespace NTL;
 
 
-void fullAdder(Ctxt& addCt, const Ctxt& ct1, const Ctxt& ct2, const long numLength, const EncryptedArray& ea){
+void fullAdder(Ctxt& addCt, const Ctxt& ct1, const Ctxt& ct2, long& numLength, const EncryptedArray& ea){
     
     Ctxt productCiphertext = ct1;
     productCiphertext.multiplyBy(ct2);
     
     Ctxt sumCiphertext = ct1;
     sumCiphertext.addCtxt(ct2);
+    
+    numLength++;
 
     vector<Ctxt> tj(numLength - 1, sumCiphertext);
 
@@ -42,8 +44,8 @@ void fullAdder(Ctxt& addCt, const Ctxt& ct1, const Ctxt& ct2, const long numLeng
         mask.resize(ea.size());
         ea.encode(maskPoly, mask);
 
-        tj[j-1].addConstant(maskPoly);
-        tj[j-1].multiplyBy(jCiphertext);
+        tj[j - 1].addConstant(maskPoly);
+        tj[j - 1].multiplyBy(jCiphertext);
     }
 
     for(unsigned long j = 0; j < tj.size(); j++) {
@@ -53,12 +55,12 @@ void fullAdder(Ctxt& addCt, const Ctxt& ct1, const Ctxt& ct2, const long numLeng
 }
 
 
-void complement(Ctxt& complementCt, const Ctxt& ct, const long numLength, const EncryptedArray& ea){
+inline void complement(Ctxt& complementCt, const Ctxt& ct, const long& numLength, const EncryptedArray& ea){
+    assert(complementCt.getPubKey() == ct.getPubKey());
     assert(numLength <= ea.size());
 
-    vector<long> mask(numLength, 1);
     ZZX maskPoly;
-    
+    vector<long> mask(numLength, 1);
     mask.resize(ea.size());
     ea.encode(maskPoly, mask);
 
@@ -67,23 +69,29 @@ void complement(Ctxt& complementCt, const Ctxt& ct, const long numLength, const 
 }
 
 
-// void subtract(Ctxt& subCt, Ctxt& sign, const Ctxt& ct1, const Ctxt& ct2, const long numLength, const EncryptedArray& ea){
-//     assert(numLength <= ea.size());
+void subtract(Ctxt& subCt, const Ctxt& ct1, const Ctxt& ct2, long& numLength, const EncryptedArray& ea){
+    assert(&ct1.getPubKey() == &ct2.getPubKey());
+    assert(numLength <= ea.size());
 
-//     vector<long> oneVector, signVector; Ctxt oneCtxt, tempCtxt;
-    
-//     complement(tempCtxt, ct2, numLength, ea);
+    const FHEPubKey& publicKey = ct1.getPubKey();
+    vector<long> oneVector, mask(numLength, 1);
+    ZZX maskPoly;
 
-//     oneVector.push_back(1); 
-//     oneVector.resize(ea.size());
-//     ea.encode(oneCtxt, oneVector);
-//     fullAdder(tempCtxt, tempCtxt, oneCtxt, numLength, ea);
+    Ctxt oneCtxt(publicKey); Ctxt tempCtxt = ct2;
 
-//     fullAdder(subCt, ct1, tempCtxt, numLength, ea);
+    ea.decrypt(tempCtxt, secretKey, resultVector);
+    cout << endl <<  "ct4 = " << resultVector << endl;
+    resultVector.clear();
 
-//     signVector.resize(numLength);
-//     signVector.push_bakc(1);
-//     signVector.resize(ea.size());
-//     ea.encode(sign, signVector);
-//     sign.multiplyBy(subCt);
-// }
+    // Complement of ct2
+    mask.resize(ea.size());
+    ea.encode(maskPoly, mask);
+    tempCtxt.addConstant(maskPoly);
+
+    oneVector.push_back(1);
+    oneVector.resize(ea.size());
+    ea.encrypt(oneCtxt, publicKey, oneVector);
+
+    fullAdder(tempCtxt, tempCtxt, oneCtxt, numLength, ea);
+    fullAdder(subCt, ct1, tempCtxt, numLength, ea);
+}
