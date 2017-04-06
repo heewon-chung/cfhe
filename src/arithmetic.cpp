@@ -78,11 +78,7 @@ void subtract(Ctxt& subCt, const Ctxt& ct1, const Ctxt& ct2, long& numLength, co
     ZZX maskPoly;
 
     Ctxt oneCtxt(publicKey); Ctxt tempCtxt = ct2;
-
-    ea.decrypt(tempCtxt, secretKey, resultVector);
-    cout << endl <<  "ct4 = " << resultVector << endl;
-    resultVector.clear();
-
+    
     // Complement of ct2
     mask.resize(ea.size());
     ea.encode(maskPoly, mask);
@@ -94,4 +90,5 @@ void subtract(Ctxt& subCt, const Ctxt& ct1, const Ctxt& ct2, long& numLength, co
 
     fullAdder(tempCtxt, tempCtxt, oneCtxt, numLength, ea);
     fullAdder(subCt, ct1, tempCtxt, numLength, ea);
+    numLength--;
 }

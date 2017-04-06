@@ -39,11 +39,10 @@ int main(){
     const EncryptedArray ea(context, F);
     long numSlots = ea.size();
     
-    ZZ Msg1, Msg2, Msg3, Msg4;
-    vector<ZZX> message1, message2, message3, message4, addResult, subResult, signResult;
+    ZZ Msg1, Msg2;
+    vector<ZZX> message1, message2, addResult;
     
-    Ctxt ct1(publicKey), ct2(publicKey), ct3(publicKey), ct4(publicKey);
-    Ctxt addCt(publicKey), subCt(publicKey), signCt(publicKey);
+    Ctxt ct1(publicKey), ct2(publicKey), addCt(publicKey);
 
     generateProblemInstance(message1, numSlots, currentLength);
     generateProblemInstance(message2, numSlots, currentLength);
@@ -58,28 +57,9 @@ int main(){
     ea.decrypt(addCt, secretKey, addResult);
 
     cout << endl;
-    cout << "Add Result (Plain): " << (Message1 + Message2) << endl;
+    cout << "Add Result (Plain): " << (Msg1 + Msg2) << endl;
     cout << "Add Result (Encrypted): " << vector2Long(addResult, currentLength) << endl;
     cout << "Add Levels Left: " << addCt.findBaseLevel() << endl;
-
-    currentLength--;
-
-    generateProblemInstance(message3, numSlots, currentLength);
-    generateProblemInstance(message4, numSlots, currentLength);
-
-    Msg3 = printAndReconstructNum(message3, currentLength);
-    Msg4 = printAndReconstructNum(message4, currentLength);
-
-    ea.encrypt(ct3, publicKey, message3);
-    ea.encrypt(ct4, publicKey, message4);
-
-    subtract(subCt, ct3, ct4, currentLength, ea, secretKey);
-    ea.decrypt(subCt, secretKey, subResult);
-    
-    cout << endl;
-    cout << "Subtraction Result (Plain): " << (Message3 - Message4) << endl;
-    cout << "Subtraction Result (Encrypted): " << vector2Long(subResult, currentLength) << endl;
-    cout << "Subtraction Levels Left: " << subCt.findBaseLevel() << endl;
 
     return 0;
 }
