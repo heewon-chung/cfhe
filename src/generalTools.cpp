@@ -26,13 +26,12 @@ void generateProblemInstance(vector<ZZX>& numberOne, long numSlots, long current
 
 ZZ printAndReconstructNum(vector<ZZX>& numberOne, long numLength) {
     ZZ zzOne = ZZ(0);
-    cout << endl;
     for (unsigned long i = 0; i < numLength; i++) {
         cerr << numberOne[i] << ", ";
         if (numberOne[i] == ZZX(1)) {
             zzOne += ZZ((1L << i));
         }
     }
-
+    cout << endl;
     return zzOne;
 }

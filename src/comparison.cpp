@@ -4,47 +4,59 @@ using namespace std;
 using namespace NTL;
 
 // Equality Test over the Integers
-void equalityTestoverZ(Ctxt& resultCt, const Ctxt& ct1, const Ctxt& ct2, const long numLength, const EncryptedArray& ea, const FHESecKey& secretKey){
+void equalityTestoverZ(Ctxt& equalCt, const Ctxt& ct1, const Ctxt& ct2, const long numLength, const EncryptedArray& ea){
     assert(&ct1.getPubKey() == & ct2.getPubKey());
-    
     const FHEPubKey& publicKey = ct1.getPubKey();
     Ctxt tempCtxt = ct1, oneCtxt(publicKey);
-
-    vector<long> resultVector;
+    ZZX onePoly;
 
     vector<long> oneVector(numLength, 1);
     oneVector.resize(ea.size());
-    ea.encrypt(oneCtxt, publicKey, oneVector);
+    ea.encode(onePoly, oneVector);
 
     tempCtxt.addCtxt(ct2);
-    tempCtxt.addCtxt(oneCtxt);
+    tempCtxt.addConstant(onePoly);
     
-    reverseCtxtProduct(resultCt, tempCtxt, numLength, ea);
+    reverseCtxtProduct(equalCt, tempCtxt, numLength, ea);
 }
 
+// lessThan if lessTan = 1, otherwise greaterThan
+void comparisonTestoverZ(Ctxt& compCt, const Ctxt& ct1, const Ctxt& ct2, const bool lessThan, const long numLength, const EncryptedArray& ea){
+    assert(&ct1.getPubKey() == & ct2.getPubKey());
+    Ctxt equalCt = ct1;
+    ZZX onePoly, correctionPoly;
 
-void comprisonTestoverZ(Ctxt& resultCtxt, const Ctxt& ct1, const Ctxt& ct2, const Ctxt& oneCtxt, const bool lessThan, const long numLength, const EncryptedArray &ea) {
+    vector<long> oneVector(numLength, 1);
+    oneVector.resize(ea.size());
+    ea.encode(onePoly, oneVector);
 
-    Ctxt equalZeroCtxt = ct1;
-    equalZeroCtxt.addCtxt(oneCtxt);
-    equalZeroCtxt.addCtxt(ct2);
+    vector<long> correctionVec(numLength, 0);
+    // correctionVec.push_back(1);
+    correctionVec[numLength - 1] = 1;
+    correctionVec.resize(ea.size());
+    ea.encode(correctionPoly, correctionVec);
 
-    // requires that function uses simdShift
-    ctxtProduct(resultCtxt, equalZeroCtxt, numLength, ea);
+    equalCt.addConstant(onePoly);
+    equalCt.addCtxt(ct2);
 
-    Ctxt compCtxt = ct1;
-    Ctxt tempCtxtTwo = ct2;
+    ctxtProduct(compCt, equalCt, numLength, ea);
+    ea.shift(compCt, -1);
 
-    if(lessThan) { // x < y
-        compCtxt.addCtxt(oneCtxt);
+    Ctxt tempCtxt1 = compCt, tempCtxt2 = ct1, tempCtxt3 = ct2;
+    tempCtxt1.multByConstant(correctionPoly);
+    compCt.addCtxt(tempCtxt1);
+    compCt.addConstant(correctionPoly);
+
+    if(lessThan){ // x < y
+        tempCtxt2.addConstant(onePoly);
     } 
-    else { // x > y
-        tempCtxtTwo.addCtxt(oneCtxt);
+    else{ // x > y
+        tempCtxt3.addConstant(onePoly);
     }
-    compCtxt.multiplyBy(tempCtxtTwo);
-    ea.shift(compCtxt, 1);
+    tempCtxt2.multiplyBy(tempCtxt3);
 
-    resultCtxt.multiplyBy(compCtxt);
-    tempCtxtTwo = resultCtxt;
-    ctxtSum(resultCtxt, tempCtxtTwo, numLength, ea);
+    compCt.multiplyBy(tempCtxt2);
+    tempCtxt3 = compCt;
+
+    ctxtSum(compCt, tempCtxt3, ea.size(), ea);
 }

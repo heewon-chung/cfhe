@@ -9,7 +9,7 @@
 
 #include "utilities.h"
 
-void equalityTestoverZ(Ctxt&, const Ctxt&, const Ctxt&, const long, const EncryptedArray&, const FHESecKey&);
-void comparisonTestoverZ(Ctxt&, const Ctxt&, const Ctxt&, const Ctxt&, const bool, const long, const EncryptedArray&);
+void equalityTestoverZ(Ctxt&, const Ctxt&, const Ctxt&, const long, const EncryptedArray&);
+void comparisonTestoverZ(Ctxt&, const Ctxt&, const Ctxt&, const bool, const long, const EncryptedArray&);
 
 #endif

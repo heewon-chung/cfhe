@@ -27,9 +27,11 @@ target_link_libraries(CFHE HElib NTL -lgmp -pthread -lgf2x -lm -O2)
 
 add_executable(test_Add test/addTest.cpp)
 target_link_libraries(test_Add CFHE -pthread)
-
 add_executable(test_Subtraction test/subTest.cpp)
 target_link_libraries(test_Subtraction CFHE -pthread)
-
 add_executable(test_Equality test/equalTest.cpp)
 target_link_libraries(test_Equality CFHE -pthread)
+add_executable(test_Comparison test/compTest.cpp)
+target_link_libraries(test_Comparison CFHE -pthread)
+add_executable(test_Order test/orderTest.cpp)
+target_link_libraries(test_Order CFHE -pthread)

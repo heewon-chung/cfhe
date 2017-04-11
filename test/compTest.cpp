@@ -1,21 +1,26 @@
-//
-// Created by ben on 20/12/2016.
-//
+#include <cstdlib>
+#include <vector>
+
 #include "../../../Library/HElib-master/src/EncryptedArray.h"
 #include "../../../Library/HElib-master/src/Ctxt.h"
 
 #include "generalTools.h"
+#include "utilities.h"
 #include "comparison.h"
-#include "arithmetic.h"
 
-int main() {
+using namespace std;
+using namespace NTL;
+
+int main(){
+    srand(time(NULL));
+    SetSeed(to_ZZ(time(NULL)));
 
     long p = 2;
     long r = 1;
+    long security = 64;
     long m = 6361;
-    long L = 7;
-    long currentLength = 3;
-    long numLength = 10;
+    long L = 10;
+    long currentLength = 6;
 
     FHEcontext context(m, p, r);
     buildModChain(context, L);
@@ -24,111 +29,47 @@ int main() {
     // Secret & Public Key Generation
     cout << "Generating Keys... \n";
     FHESecKey secretKey(context);
-    const FHEPubKey &publicKey = secretKey;
-    secretKey.GenSecKey(64);
+    const FHEPubKey& publicKey = secretKey;
+    secretKey.GenSecKey(security);
 
     cout << "Generating Frobenius and SIMD Matrices... \n";
     addFrbMatrices(secretKey);
     addSome1DMatrices(secretKey);
 
     const EncryptedArray ea(context, F);
+    
+    ZZ Msg1, Msg2;
+    vector<ZZX> message1, message2, compResult;
+    
+    Ctxt ct1(publicKey), ct2(publicKey), compCt(publicKey);
 
-    long numSlots = ea.size();
-    long plaintextDegree = ea.getDegree();
+    generateProblemInstance(message1, ea.size(), currentLength);
+    generateProblemInstance(message2, ea.size(), currentLength);
+    
+    cout << endl << "Msg1 = ";
+    Msg1 = printAndReconstructNum(message1, currentLength);
+    cout << "Msg2 = ";
+    Msg2 = printAndReconstructNum(message2, currentLength);
+    
+    ea.encrypt(ct1, publicKey, message1);
+    ea.encrypt(ct2, publicKey, message2);
 
-    vector<ZZX> oneVector(numSlots, ZZX(1));
-    vector<ZZX> numberOne, numberTwo, resultVector;
+    bool lessThan = 0;
+    
+    comparisonTestoverZ(compCt, ct1, ct2, lessThan, currentLength, ea);
 
-    generateProblemInstance(numberOne, numSlots, currentLength);
-    generateProblemInstance(numberTwo, numSlots, currentLength);
+    ea.decrypt(compCt, secretKey, compResult);
 
-    Ctxt ciphertextOne(publicKey);
-    Ctxt ciphertextTwo(publicKey);
-    Ctxt ciphertextResult(publicKey);
-    Ctxt tempCiphertext(publicKey);
-    Ctxt tempCiphertextOne(publicKey);
-    Ctxt oneCiphertext(publicKey);
-
-    ea.encrypt(ciphertextOne, publicKey, numberOne);
-    ea.encrypt(ciphertextTwo, publicKey, numberTwo);
-    ea.encrypt(oneCiphertext, publicKey, oneVector);
-
-    tempCiphertext = oneCiphertext;
-    tempCiphertextOne = oneCiphertext;
-    ciphertextResult = oneCiphertext;
-
-    bool lessThan = 1;
-
-//    ordTest(ciphertextResult, ciphertextOne, ciphertextTwo, oneCiphertext, lessThan, numLength, ea);
-    Ctxt equalZeroCtxt = ciphertextOne;
-    equalZeroCtxt.addCtxt(oneCiphertext);
-    equalZeroCtxt.addCtxt(ciphertextTwo);
-
-    // requires that function uses simdShift
-//    cout << "Level before Product: " << equalZeroCtxt.findBaseLevel() << endl;
-    ctxtProduct(ciphertextResult, equalZeroCtxt, numLength, ea);
-//    cout << "Level after Product: " << ciphertextResult.findBaseLevel() << endl;
-//    simdShift(equalZeroCtxt, resultCtxt, -1, numLength, ea);
-    ea.shift(ciphertextResult, -1);
-    Ctxt prefixedCtxt = ciphertextResult;
-
-    vector<long> correctionVec(numLength, 0);
-    correctionVec[numLength-1] = 1;
-    correctionVec.resize(numSlots);
-    ZZX correctionPoly;
-    ea.encode(correctionPoly, correctionVec);
-
-    Ctxt tempCtxtX = ciphertextResult;
-    tempCtxtX.multByConstant(correctionPoly);
-    ciphertextResult.addCtxt(tempCtxtX);
-    ciphertextResult.addConstant(correctionPoly);
-
-    Ctxt fixedCtxt = ciphertextResult;
-
-    Ctxt compCtxt = ciphertextOne;
-    Ctxt tempCtxtTwo = ciphertextTwo;
-
-    if(lessThan) { // x < y
-        compCtxt.addCtxt(oneCiphertext);
-    } else { // x > y
-        tempCtxtTwo.addCtxt(oneCiphertext);
-    }
-    compCtxt.multiplyBy(tempCtxtTwo);
-//    ea.shift(compCtxt, 1);
-
-    ciphertextResult.multiplyBy(compCtxt);
-    tempCtxtTwo = ciphertextResult;
-//    cout << "Level before Sum: " << ciphertextResult.findBaseLevel() << endl;
-    ctxtSum(ciphertextResult, tempCtxtTwo, numLength, ea);
-//    cout << "Level after Sum: " << ciphertextResult.findBaseLevel() << endl;
-    endTime = chrono::high_resolution_clock::now();
-    timeTaken = endTime - startTime;
-
-    ZZ zzOne, zzTwo;
-
-    zzOne = printAndReconstructNum(numberOne, currentLength);
-    zzTwo = printAndReconstructNum(numberTwo, currentLength);
-    cout << endl << "Number One: " << zzOne << ", Number Two: " << zzTwo << endl;
-
-
-    ea.decrypt(ciphertextResult, secretKey, resultVector);
-//    cout << endl << "Final Result: ";
-//    for(unsigned long i = 0; i < currentLength+2; i++) {
-//        cout << resultVector[i] << ", ";
-//    }
-
-//    cout << vector2Long(resultVector, numLength) << endl;
-
-    cout << endl << "Result (Plain): ";
+    cout << endl;
+    cout << "Equal Result (Plain): ";
     if(lessThan){
-        cout << (zzOne < zzTwo) << endl;
+        cout << (Msg1 < Msg2) << endl;
     }
     else {
-        cout << (zzOne > zzTwo) << endl;
+        cout << (Msg1 > Msg2) << endl;
     }
-    cout << "Result (Encrypted): " << resultVector[0] << endl;
-    cout << "Levels Left: " << ciphertextResult.findBaseLevel() << endl;
-    cout << "Time Taken: " << timeTaken.count() << endl;
+    cout << "Equal Result (Encrypted): " << compResult[0] << endl;
+    cout << "Equal Levels Left: " << compCt.findBaseLevel() << endl;
 
     return 0;
 }

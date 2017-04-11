@@ -48,7 +48,9 @@ int main(){
     generateProblemInstance(message1, numSlots, currentLength);
     generateProblemInstance(message2, numSlots, currentLength);
     
+    cout << endl << "Msg1 = ";
     Msg1 = printAndReconstructNum(message1, currentLength);
+    cout << "Msg 2 = ";
     Msg2 = printAndReconstructNum(message2, currentLength);
     
     ea.encrypt(ct1, publicKey, message1);
