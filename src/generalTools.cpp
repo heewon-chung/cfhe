@@ -28,8 +28,9 @@ void generateProblemInstance(vector<ZZX>& message, long numSlots, long currentLe
 
 
 void generateProblemInstance(vector<ZZX>& message, long numSlots, long numPQ, long lengthPQ) {
+    assert(numPQ * lengthPQ <= numSlots);
     message.clear();
-
+    
     for(unsigned long i = 0; i < numPQ; i++){
         for(unsigned long j = 0; j < lengthPQ; j++){
             message.push_back(ZZX(rand() % 2));
@@ -57,8 +58,8 @@ vector<ZZ> printAndReconstructNum(vector<ZZX>& message, long numPQ, long lengthP
 
     for(unsigned long i = 0; i < numPQ; i++){
         for(unsigned long j = 0; j < lengthPQ; j++){
-            cout << message[i * numPQ + j] << " ";
-            if(message[i * numPQ + j] == ZZX(1)){
+            cout << message[i * lengthPQ + j] << " ";
+            if(message[i * lengthPQ + j] == ZZX(1)){
                 Msg[i] += ZZ((1L << j));
             }
         }

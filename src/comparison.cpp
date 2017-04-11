@@ -17,11 +17,11 @@ void equalityTestoverZ(Ctxt& equalCt, const Ctxt& ct1, const Ctxt& ct2, const lo
     tempCtxt.addCtxt(ct2);
     tempCtxt.addConstant(onePoly);
     
-    reverseCtxtProduct(equalCt, tempCtxt, numLength, ea);
+    ctxtProduct(equalCt, tempCtxt, numLength, ea);
 }
 
 
-void equalityTestoverR(Ctxt& equalCt, const Ctxt& ct1, const Ctxt& ct2, const long numPQ, long lengthPQ, const EncryptedArray& ea){
+void equalityTestoverR(Ctxt& equalCt, const Ctxt& ct1, const Ctxt& ct2, const long numPQ, long lengthPQ, const EncryptedArray& ea, const FHESecKey& secretKey){
     assert(&ct1.getPubKey() == & ct2.getPubKey());
     assert(numPQ * lengthPQ <= ea.size());
     
@@ -31,10 +31,20 @@ void equalityTestoverR(Ctxt& equalCt, const Ctxt& ct1, const Ctxt& ct2, const lo
     oneVector.resize(ea.size());
     ea.encode(onePoly, oneVector);
 
+    vector<long> result;
+
     tempCtxt.addCtxt(ct2);
+
+    ea.decrypt(tempCtxt, secretKey, result);
+    cout << "result1 = " << result << endl;
+    result.clear();
+
     tempCtxt.addConstant(onePoly);
+    ea.decrypt(tempCtxt, secretKey, result);
+    cout << "result2 = " << result << endl;
+    result.clear();
     
-    reverseCtxtProduct(equalCt, tempCtxt, numPQ * lengthPQ, ea);
+    ctxtProduct(equalCt, tempCtxt, numPQ * lengthPQ, ea);
 }
 
 

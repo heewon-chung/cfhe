@@ -20,8 +20,8 @@ int main(){
     long security = 64;
     long m = 6361;
     long L = 8;
-    long numPQ = 5;
-    long lengthPQ = 4;
+    long numPQ = 3;
+    long lengthPQ = 5;
 
     FHEcontext context(m, p, r);
     buildModChain(context, L);
@@ -44,23 +44,22 @@ int main(){
     vector<ZZX> message1, message2, equalResult;
     
     Ctxt ct1(publicKey), ct2(publicKey), equalCt(publicKey);
-
+    
     generateProblemInstance(message1, numSlots, numPQ, lengthPQ);
     generateProblemInstance(message2, numSlots, numPQ, lengthPQ);
     
     cout << endl << "Msg1 = ";
     Msg1 = printAndReconstructNum(message1, numPQ, lengthPQ);
     cout << "Msg2 = ";
-    Msg2 = printAndReconstructNum(message1, numPQ, lengthPQ);
+    Msg2 = printAndReconstructNum(message2, numPQ, lengthPQ);
     
     ea.encrypt(ct1, publicKey, message1);
     ea.encrypt(ct2, publicKey, message2);
     
-    equalityTestoverR(equalCt, ct1, ct2, numPQ, lengthPQ, ea);
+    equalityTestoverR(equalCt, ct1, ct2, numPQ, lengthPQ, ea, secretKey);
 
     ea.decrypt(equalCt, secretKey, equalResult);
 
-    cout << endl;
     cout << "Equal Result (Plain): " << (Msg1 == Msg2) << endl;
     cout << "Equal Result (Encrypted): " << equalResult[0] << endl;
     cout << "Equal Levels Left: " << equalCt.findBaseLevel() << endl;

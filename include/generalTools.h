@@ -2,6 +2,7 @@
 #define GENERALTOOLS_H
 
 #include <vector>
+#include <cassert>
 
 #include "NTL/ZZX.h"
 
