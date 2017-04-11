@@ -10,6 +10,7 @@
 #include "utilities.h"
 
 void equalityTestoverZ(Ctxt&, const Ctxt&, const Ctxt&, const long, const EncryptedArray&);
+void equalityTestoverR(Ctxt&, const Ctxt&, const Ctxt&, const long, const long, const EncryptedArray&);
 void comparisonTestoverZ(Ctxt&, const Ctxt&, const Ctxt&, const bool, const long, const EncryptedArray&);
 
 #endif
