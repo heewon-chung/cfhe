@@ -98,7 +98,7 @@ void comparisonTestOverZ(Ctxt& compCt, const Ctxt& ct1, const Ctxt& ct2, const b
 }
 
 
-void comparisonTestOverR(Ctxt& compCt, const vector<Ctxt>& ct1, const vector<Ctxt>& ct2, const bool lessThan, const long lengthPQ, const EncryptedArray& ea, const FHESecKey& secretKey){
+void comparisonTestOverR(Ctxt& compCt, const vector<Ctxt>& ct1, const vector<Ctxt>& ct2, const bool lessThan, const long lengthPQ, const EncryptedArray& ea){
     assert(&ct1[0].getPubKey() == & ct2[0].getPubKey());
     
     const bool greaterThan = 1 - lessThan;

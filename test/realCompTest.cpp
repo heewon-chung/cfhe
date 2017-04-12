@@ -61,7 +61,7 @@ int main(){
     }
     
     const bool lessThan = 1;
-    comparisonTestOverR(compCt, ct1, ct2, lessThan, lengthPQ, ea, secretKey);
+    comparisonTestOverR(compCt, ct1, ct2, lessThan, lengthPQ, ea);
 
     ea.decrypt(compCt, secretKey, compResult);
 
