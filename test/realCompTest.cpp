@@ -3,6 +3,7 @@
 
 #include "../../../Library/HElib-master/src/EncryptedArray.h"
 #include "../../../Library/HElib-master/src/Ctxt.h"
+#include "NTL/RR.h"
 
 #include "generalTools.h"
 #include "utilities.h"
@@ -21,7 +22,7 @@ int main(){
     long m = 6361;
     long L = 9;
     long numPQ = 3;
-    long lengthPQ = 5;
+    long lengthPQ = 4;
 
     FHEcontext context(m, p, r);
     buildModChain(context, L);
@@ -40,7 +41,7 @@ int main(){
     const EncryptedArray ea(context, F);
     long numSlots = ea.size();
     
-    vector<ZZ> Msg1, Msg2;
+    RR Msg1, Msg2;
     vector<vector<ZZX>> message1, message2;
     vector<long> compResult;
     vector<Ctxt> ct1(numPQ, publicKey), ct2(numPQ, publicKey);

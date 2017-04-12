@@ -40,7 +40,7 @@ int main(){
     const EncryptedArray ea(context, F);
     long numSlots = ea.size();
     
-    vector<ZZ> Msg1, Msg2;
+    RR Msg1, Msg2;
     vector<vector<ZZX>> message1, message2;
     vector<long> equalResult;
     vector<Ctxt> ct1(numPQ, publicKey), ct2(numPQ, publicKey);

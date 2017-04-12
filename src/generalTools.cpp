@@ -54,19 +54,27 @@ ZZ printAndReconstructNum(vector<ZZX>& message, long numLength) {
 }
 
 
-vector<ZZ> printAndReconstructNum(vector<vector<ZZX>>& message, long numPQ, long lengthPQ) {
-    vector<ZZ> Msg(numPQ, ZZ(0));
+RR printAndReconstructNum(vector<vector<ZZX>>& message, long numPQ, long lengthPQ) {
+    RR Msg = RR(0);
+    vector<ZZ> msg(numPQ, ZZ(0));
 
     for(unsigned long i = 0; i < numPQ; i++){
         for(unsigned long j = 0; j < lengthPQ; j++){
             cout << message[i][j] << " ";
             if(message[i][j] == ZZX(1)){
-                Msg[i] += ZZ((1L << j));
+                msg[i] += ZZ((1L << j));
             }
         }
         cout << "\t";
     }
     cout << endl;
+
+    for(int i = numPQ - 1; i >= 0; i--){ 
+        Msg += conv<RR>(msg[i]);
+        if(i != 0){
+            Msg = 1 / Msg;
+        }
+    }
     
     return Msg;
 }
