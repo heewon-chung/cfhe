@@ -37,3 +37,5 @@ target_link_libraries(test_RealEquality CFHE -pthread)
 
 add_executable(test_IntegerComparison test/integerCompTest.cpp)
 target_link_libraries(test_IntegerComparison CFHE -pthread)
+add_executable(test_RealComparison test/realCompTest.cpp)
+target_link_libraries(test_RealComparison CFHE -pthread)

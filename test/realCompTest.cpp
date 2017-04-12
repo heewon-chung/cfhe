@@ -19,7 +19,7 @@ int main(){
     long r = 1;
     long security = 64;
     long m = 6361;
-    long L = 8;
+    long L = 9;
     long numPQ = 3;
     long lengthPQ = 5;
 
@@ -42,9 +42,9 @@ int main(){
     
     vector<ZZ> Msg1, Msg2;
     vector<vector<ZZX>> message1, message2;
-    vector<long> equalResult;
+    vector<long> compResult;
     vector<Ctxt> ct1(numPQ, publicKey), ct2(numPQ, publicKey);
-    Ctxt equalCt(publicKey);
+    Ctxt compCt(publicKey);
     
     generateProblemInstance(message1, numSlots, numPQ, lengthPQ);
     generateProblemInstance(message2, numSlots, numPQ, lengthPQ);
@@ -56,16 +56,24 @@ int main(){
     
     for(unsigned long i = 0; i < numPQ; i++){
         ea.encrypt(ct1[i], publicKey, message1[i]);
-        ea.encrypt(ct2[i], publicKey, message1[i]);
+        ea.encrypt(ct2[i], publicKey, message2[i]);
     }
     
-    equalityTestOverR(equalCt, ct1, ct2, lengthPQ, ea);
+    const bool lessThan = 1;
+    comparisonTestOverR(compCt, ct1, ct2, lessThan, lengthPQ, ea, secretKey);
 
-    ea.decrypt(equalCt, secretKey, equalResult);
+    ea.decrypt(compCt, secretKey, compResult);
 
-    cout << "Equal Result (Plain): " << (Msg1 == Msg2) << endl;
-    cout << "Equal Result (Encrypted): " << equalResult[0] << endl;
-    cout << "Equal Levels Left: " << equalCt.findBaseLevel() << endl;
+    cout << endl;
+    cout << "Equal Result (Plain): ";
+    if(lessThan){
+        cout << (Msg1 < Msg2) << endl;
+    }
+    else {
+        cout << (Msg1 > Msg2) << endl;
+    }
+    cout << "Equal Result (Encrypted): " << compResult[0] << endl;
+    cout << "Equal Levels Left: " << compCt.findBaseLevel() << endl;
 
     return 0;
 }
