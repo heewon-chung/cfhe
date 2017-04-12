@@ -11,8 +11,8 @@ using namespace NTL;
 
 long vector2Long(vector<ZZX>&, long);
 void generateProblemInstance(vector<ZZX>&, long, long);
-void generateProblemInstance(vector<ZZX>&, long, long, long);
+void generateProblemInstance(vector<vector<ZZX>>&, long, long, long);
 ZZ printAndReconstructNum(vector<ZZX>&, long);
-vector<ZZ> printAndReconstructNum(vector<ZZX>&, long, long);
+vector<ZZ> printAndReconstructNum(vector<vector<ZZX>>&, long, long);
 
 #endif

@@ -27,12 +27,18 @@ void ctxtSum(Ctxt& addCt, const Ctxt& ct, const long numLength, const EncryptedA
 // First entry contains information
 void ctxtProduct(Ctxt& mulCt, const Ctxt& ct, const long numLength, const EncryptedArray& ea){
     assert(numLength <= ea.size());
-
     Ctxt tempCtxt1 = ct, tempCtxt2 = ct;
 
     long shiftAmt = 1;
     while(shiftAmt < numLength){
+        vector<long> mask(numLength - shiftAmt);
+        mask.resize(numLength, 1);
+        mask.resize(ea.size());
+        ZZX maskPoly;
+        ea.encode(maskPoly, mask);
+
         ea.shift(tempCtxt2, -shiftAmt);
+        tempCtxt2.addConstant(maskPoly);
         tempCtxt2.multiplyBy(tempCtxt1);
         tempCtxt1 = tempCtxt2;
         shiftAmt *= 2;
@@ -42,27 +48,25 @@ void ctxtProduct(Ctxt& mulCt, const Ctxt& ct, const long numLength, const Encryp
 }
 
 // last entry contains information
-void reverseCtxtProduct(Ctxt& prodCt, const Ctxt& ct, const long numLength, const EncryptedArray& ea) {
+void reverseCtxtProduct(Ctxt& mulCt, const Ctxt& ct, const long numLength, const EncryptedArray& ea) {
     assert(numLength <= ea.size());
-
     Ctxt tempCtxt1 = ct, tempCtxt2 = ct;
 
     long shiftAmt = 1;
     while (shiftAmt < numLength) {
-        ea.shift(tempCtxt2, shiftAmt);
-
         vector<long> mask(shiftAmt, 1);
-        mask.resize(ea.size());
         ZZX maskPoly;
+        mask.resize(ea.size());
         ea.encode(maskPoly, mask);
+        
+        ea.shift(tempCtxt2, shiftAmt);
         tempCtxt2.addConstant(maskPoly);
         tempCtxt2.multiplyBy(tempCtxt1);
         tempCtxt1 = tempCtxt2;
-
         shiftAmt *= 2;
     }
 
-    prodCt = tempCtxt1;
+    mulCt = tempCtxt1;
 }
 
 

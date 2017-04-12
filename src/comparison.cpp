@@ -4,7 +4,7 @@ using namespace std;
 using namespace NTL;
 
 // Equality Test over the Integers
-void equalityTestoverZ(Ctxt& equalCt, const Ctxt& ct1, const Ctxt& ct2, const long numLength, const EncryptedArray& ea){
+void equalityTestOverZ(Ctxt& equalCt, const Ctxt& ct1, const Ctxt& ct2, const long numLength, const EncryptedArray& ea){
     assert(&ct1.getPubKey() == & ct2.getPubKey());
     assert(numLength <= ea.size());
 
@@ -21,45 +21,48 @@ void equalityTestoverZ(Ctxt& equalCt, const Ctxt& ct1, const Ctxt& ct2, const lo
 }
 
 
-void equalityTestoverR(Ctxt& equalCt, const Ctxt& ct1, const Ctxt& ct2, const long numPQ, long lengthPQ, const EncryptedArray& ea, const FHESecKey& secretKey){
-    assert(&ct1.getPubKey() == & ct2.getPubKey());
-    assert(numPQ * lengthPQ <= ea.size());
-    
-    Ctxt tempCtxt = ct1;
+void equalityTestOverR(Ctxt& equalCt, const vector<Ctxt>& ct1, const vector<Ctxt>& ct2, long lengthPQ, const EncryptedArray& ea){
+    assert(&ct1[0].getPubKey() == & ct2[0].getPubKey());
+    assert(ct1.size() == ct2.size());
+
+    long numLength = ct1.size();
+    const FHEPubKey& publicKey = ct1[0].getPubKey();
+
+    vector<Ctxt> tempCtxt = ct1, equalPQ(numLength, publicKey);
     ZZX onePoly;
-    vector<long> oneVector(numPQ * lengthPQ, 1);
+    vector<long> oneVector(lengthPQ, 1);
     oneVector.resize(ea.size());
     ea.encode(onePoly, oneVector);
 
-    vector<long> result;
+    for(int i = 0; i < numLength; i++){
+        tempCtxt[i].addCtxt(ct2[i]);
+        tempCtxt[i].addConstant(onePoly);
 
-    tempCtxt.addCtxt(ct2);
-
-    ea.decrypt(tempCtxt, secretKey, result);
-    cout << "result1 = " << result << endl;
-    result.clear();
-
-    tempCtxt.addConstant(onePoly);
-    ea.decrypt(tempCtxt, secretKey, result);
-    cout << "result2 = " << result << endl;
-    result.clear();
-    
-    ctxtProduct(equalCt, tempCtxt, numPQ * lengthPQ, ea);
+        ctxtProduct(equalPQ[i], tempCtxt[i], lengthPQ, ea);
+        
+        if(i == 0){
+            equalCt = equalPQ[i];
+        }
+        else{
+            equalCt.multiplyBy(equalPQ[i]);
+        }
+    }
 }
 
 
 // lessThan if lessTan = 1, otherwise greaterThan
-void comparisonTestoverZ(Ctxt& compCt, const Ctxt& ct1, const Ctxt& ct2, const bool lessThan, const long numLength, const EncryptedArray& ea){
+void comparisonTestOverZ(Ctxt& compCt, const Ctxt& ct1, const Ctxt& ct2, const bool lessThan, const long numLength, const EncryptedArray& ea){
     assert(&ct1.getPubKey() == & ct2.getPubKey());
+    
     Ctxt equalCt = ct1;
-    ZZX onePoly, correctionPoly;
+    ZZX onePoly, maskPoly;
     vector<long> oneVector(numLength, 1);
     oneVector.resize(ea.size());
     ea.encode(onePoly, oneVector);
-    vector<long> correctionVec(numLength, 0);
-    correctionVec[numLength - 1] = 1;
-    correctionVec.resize(ea.size());
-    ea.encode(correctionPoly, correctionVec);
+    vector<long> mask(numLength, 0);
+    mask[numLength - 1] = 1;
+    mask.resize(ea.size());
+    ea.encode(maskPoly, mask);
 
     equalCt.addConstant(onePoly);
     equalCt.addCtxt(ct2);
@@ -68,9 +71,9 @@ void comparisonTestoverZ(Ctxt& compCt, const Ctxt& ct1, const Ctxt& ct2, const b
     ea.shift(compCt, -1);
 
     Ctxt tempCtxt1 = compCt, tempCtxt2 = ct1, tempCtxt3 = ct2;
-    tempCtxt1.multByConstant(correctionPoly);
+    tempCtxt1.multByConstant(maskPoly);
     compCt.addCtxt(tempCtxt1);
-    compCt.addConstant(correctionPoly);
+    compCt.addConstant(maskPoly);
 
     if(lessThan){ // x < y
         tempCtxt2.addConstant(onePoly);
@@ -79,9 +82,10 @@ void comparisonTestoverZ(Ctxt& compCt, const Ctxt& ct1, const Ctxt& ct2, const b
         tempCtxt3.addConstant(onePoly);
     }
     tempCtxt2.multiplyBy(tempCtxt3);
-
     compCt.multiplyBy(tempCtxt2);
     tempCtxt3 = compCt;
 
     ctxtSum(compCt, tempCtxt3, ea.size(), ea);
 }
+
+

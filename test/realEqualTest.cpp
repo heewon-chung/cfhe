@@ -41,9 +41,10 @@ int main(){
     long numSlots = ea.size();
     
     vector<ZZ> Msg1, Msg2;
-    vector<ZZX> message1, message2, equalResult;
-    
-    Ctxt ct1(publicKey), ct2(publicKey), equalCt(publicKey);
+    vector<vector<ZZX>> message1, message2;
+    vector<long> equalResult;
+    vector<Ctxt> ct1(numPQ, publicKey), ct2(numPQ, publicKey);
+    Ctxt equalCt(publicKey);
     
     generateProblemInstance(message1, numSlots, numPQ, lengthPQ);
     generateProblemInstance(message2, numSlots, numPQ, lengthPQ);
@@ -53,10 +54,12 @@ int main(){
     cout << "Msg2 = ";
     Msg2 = printAndReconstructNum(message2, numPQ, lengthPQ);
     
-    ea.encrypt(ct1, publicKey, message1);
-    ea.encrypt(ct2, publicKey, message2);
+    for(unsigned long i = 0; i < numPQ; i++){
+        ea.encrypt(ct1[i], publicKey, message1[i]);
+        ea.encrypt(ct2[i], publicKey, message2[i]);
+    }
     
-    equalityTestoverR(equalCt, ct1, ct2, numPQ, lengthPQ, ea, secretKey);
+    equalityTestOverR(equalCt, ct1, ct2, lengthPQ, ea);
 
     ea.decrypt(equalCt, secretKey, equalResult);
 

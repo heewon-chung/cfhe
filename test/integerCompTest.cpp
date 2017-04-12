@@ -21,6 +21,8 @@ int main(){
     long m = 6361;
     long L = 10;
     long currentLength = 6;
+    long numPQ = 5;
+    long lengthPQ = 4;
 
     FHEcontext context(m, p, r);
     buildModChain(context, L);
@@ -56,7 +58,7 @@ int main(){
 
     bool lessThan = 0;
     
-    comparisonTestoverZ(compCt, ct1, ct2, lessThan, currentLength, ea);
+    comparisonTestOverZ(compCt, ct1, ct2, lessThan, currentLength, ea);
 
     ea.decrypt(compCt, secretKey, compResult);
 

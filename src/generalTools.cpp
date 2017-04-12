@@ -27,17 +27,17 @@ void generateProblemInstance(vector<ZZX>& message, long numSlots, long currentLe
 }
 
 
-void generateProblemInstance(vector<ZZX>& message, long numSlots, long numPQ, long lengthPQ) {
+void generateProblemInstance(vector<vector<ZZX>>& message, long numSlots, long numPQ, long lengthPQ) {
     assert(numPQ * lengthPQ <= numSlots);
     message.clear();
+    message.resize(numPQ);
     
     for(unsigned long i = 0; i < numPQ; i++){
         for(unsigned long j = 0; j < lengthPQ; j++){
-            message.push_back(ZZX(rand() % 2));
+            message[i].push_back(ZZX(rand() % 2));
         }
+        message[i].resize(numSlots, ZZX(0));
     }
-
-    message.resize(numSlots, ZZX(0));
 }
 
 
@@ -53,18 +53,20 @@ ZZ printAndReconstructNum(vector<ZZX>& message, long numLength) {
     return Msg;
 }
 
-vector<ZZ> printAndReconstructNum(vector<ZZX>& message, long numPQ, long lengthPQ) {
+
+vector<ZZ> printAndReconstructNum(vector<vector<ZZX>>& message, long numPQ, long lengthPQ) {
     vector<ZZ> Msg(numPQ, ZZ(0));
 
     for(unsigned long i = 0; i < numPQ; i++){
         for(unsigned long j = 0; j < lengthPQ; j++){
-            cout << message[i * lengthPQ + j] << " ";
-            if(message[i * lengthPQ + j] == ZZX(1)){
+            cout << message[i][j] << " ";
+            if(message[i][j] == ZZX(1)){
                 Msg[i] += ZZ((1L << j));
             }
         }
         cout << "\t";
     }
     cout << endl;
+    
     return Msg;
 }

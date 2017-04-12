@@ -55,7 +55,7 @@ int main(){
     ea.encrypt(ct1, publicKey, message1);
     ea.encrypt(ct2, publicKey, message2);
     
-    equalityTestoverZ(equalCt, ct1, ct2, currentLength, ea);
+    equalityTestOverZ(equalCt, ct1, ct2, currentLength, ea);
 
     ea.decrypt(equalCt, secretKey, equalResult);
 
