@@ -4,13 +4,13 @@ using namespace std;
 using namespace NTL;
 
 
-void fullAdder(Ctxt& addCt, const Ctxt& ct1, const Ctxt& ct2, long& numLength, const EncryptedArray& ea){
+void fullAdder(Ctxt& addCt, const Ctxt& ctxt1, const Ctxt& ctxt2, long& numLength, const EncryptedArray& ea){
     
-    Ctxt productCiphertext = ct1;
-    productCiphertext.multiplyBy(ct2);
+    Ctxt productCiphertext = ctxt1;
+    productCiphertext.multiplyBy(ctxt2);
     
-    Ctxt sumCiphertext = ct1;
-    sumCiphertext.addCtxt(ct2);
+    Ctxt sumCiphertext = ctxt1;
+    sumCiphertext.addCtxt(ctxt2);
     
     numLength++;
 
@@ -69,17 +69,17 @@ inline void complement(Ctxt& complementCt, const Ctxt& ct, const long& numLength
 }
 
 
-void subtract(Ctxt& subCt, const Ctxt& ct1, const Ctxt& ct2, long& numLength, const EncryptedArray& ea){
-    assert(&ct1.getPubKey() == &ct2.getPubKey());
+void subtract(Ctxt& subCt, const Ctxt& ctxt1, const Ctxt& ctxt2, long& numLength, const EncryptedArray& ea){
+    assert(&ctxt1.getPubKey() == &ctxt2.getPubKey());
     assert(numLength <= ea.size());
 
-    const FHEPubKey& publicKey = ct1.getPubKey();
+    const FHEPubKey& publicKey = ctxt1.getPubKey();
     vector<long> oneVector, mask(numLength, 1);
     ZZX maskPoly;
 
-    Ctxt oneCtxt(publicKey); Ctxt tempCtxt = ct2;
+    Ctxt oneCtxt(publicKey); Ctxt tempCtxt = ctxt2;
     
-    // Complement of ct2
+    // Complement of ctxt2
     mask.resize(ea.size());
     ea.encode(maskPoly, mask);
     tempCtxt.addConstant(maskPoly);
@@ -89,6 +89,6 @@ void subtract(Ctxt& subCt, const Ctxt& ct1, const Ctxt& ct2, long& numLength, co
     ea.encrypt(oneCtxt, publicKey, oneVector);
 
     fullAdder(tempCtxt, tempCtxt, oneCtxt, numLength, ea);
-    fullAdder(subCt, ct1, tempCtxt, numLength, ea);
+    fullAdder(subCt, ctxt1, tempCtxt, numLength, ea);
     numLength--;
 }

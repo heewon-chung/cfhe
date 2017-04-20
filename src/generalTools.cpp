@@ -1,13 +1,16 @@
+//
+// Created by btan on 8/12/16.
+//
 #include "generalTools.h"
 
 using namespace std;
 using namespace NTL;
 
 
-long vector2Long(vector<ZZX>& result, long numLength) {
+long vector2Long(vector<ZZX>& message, long numLength) {
     long query = 0;
     for(unsigned long i = 0; i < numLength; i++) {
-        if(result[i] == ZZX(1)) {
+        if(message[i] == ZZX(1)) {
             query += (1L << i);
         }
     }

@@ -1,3 +1,6 @@
+//
+// Created by btan on 8/12/16.
+//
 #ifndef GENERALTOOLS_H
 #define GENERALTOOLS_H
 

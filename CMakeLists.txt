@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6)
 project(continuedfractionHE)
 
 set(CMAKE_CXX_STANDARD 11)
-set(SOURCE_FILES src/arithmetic.cpp src/comparison.cpp src/generalTools.cpp src/utilities.cpp)
+set(SOURCE_FILES src/arithmetic.cpp src/comparison.cpp src/generalTools.cpp src/utilities.cpp src/sorting.cpp)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 # Configuration Profile
@@ -39,3 +39,6 @@ add_executable(test_IntegerComparison test/integerCompTest.cpp)
 target_link_libraries(test_IntegerComparison CFHE -pthread)
 add_executable(test_RealComparison test/realCompTest.cpp)
 target_link_libraries(test_RealComparison CFHE -pthread)
+
+add_executable(test_Sorting test/sortTest.cpp)
+target_link_libraries(test_Sorting CFHE -pthread)
