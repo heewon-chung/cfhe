@@ -5,7 +5,7 @@ using namespace NTL;
 
 
 void fullAdder(Ctxt& addCt, const Ctxt& ctxt1, const Ctxt& ctxt2, long& numLength, const EncryptedArray& ea){
-
+    assert(&ctxt1.getPubKey() == &ctxt2.getPubKey());
     Ctxt prodCtxt = ctxt1, sumCtxt = ctxt1;
     vector<Ctxt> tj(numLength - 1, sumCtxt);
 
@@ -54,7 +54,7 @@ void fullAdder(Ctxt& addCt, const Ctxt& ctxt1, const Ctxt& ctxt2, long& numLengt
 
 
 inline void complement(Ctxt& complementCtxt, const Ctxt& ct, const long& numLength, const EncryptedArray& ea){
-    assert(complementCtxt.getPubKey() == ct.getPubKey());
+    assert(&complementCtxt.getPubKey() == &ct.getPubKey());
     assert(numLength <= ea.size());
 
     ZZX maskPoly;

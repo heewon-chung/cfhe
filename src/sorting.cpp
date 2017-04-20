@@ -19,7 +19,7 @@ void swap(vector<Ctxt>& lessCtxt, vector<Ctxt>& greaterCtxt, const vector<Ctxt>&
     vector<Ctxt> tempCtxt(ctxt2.size(), publicKey);
     
     // compCtxt1 = LT(X, Y) = GT(Y, X)
-    // compCtxt2 = LT(Y, X) = GT(X, Y) = compCtxt1 + 1
+    // compCtxt2 = LT(Y, X) = GT(X, Y) = compCtxt + 1
     comparisonTestOverR(compCtxt1, ctxt1, ctxt2, lessThan, lengthPQ, ea);
     compCtxt2 = compCtxt1;
     compCtxt2.addConstant(flipPoly);
