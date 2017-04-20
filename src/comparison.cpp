@@ -4,7 +4,7 @@ using namespace std;
 using namespace NTL;
 
 // Equality Test over the Integers
-void equalityTestOverZ(Ctxt& equalCt, const Ctxt& ctxt1, const Ctxt& ctxt2, const long numLength, const EncryptedArray& ea){
+void equalityTestOverZ(Ctxt& equalCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, const long numLength, const EncryptedArray& ea){
     assert(&ctxt1.getPubKey() == & ctxt2.getPubKey());
     assert(numLength <= ea.size());
 
@@ -17,11 +17,11 @@ void equalityTestOverZ(Ctxt& equalCt, const Ctxt& ctxt1, const Ctxt& ctxt2, cons
     tempCtxt.addCtxt(ctxt2);
     tempCtxt.addConstant(onePoly);
     
-    ctxtProduct(equalCt, tempCtxt, numLength, ea);
+    ctxtProduct(equalCtxt, tempCtxt, numLength, ea);
 }
 
-
-void equalityTestOverR(Ctxt& equalCt, const vector<Ctxt>& ctxt1, const vector<Ctxt>& ctxt2, long lengthPQ, const EncryptedArray& ea){
+// Equality Test over the Real Numbers
+void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<Ctxt>& ctxt2, long lengthPQ, const EncryptedArray& ea){
     assert(&ctxt1[0].getPubKey() == & ctxt2[0].getPubKey());
     assert(ctxt1.size() == ctxt2.size());
 
@@ -33,10 +33,10 @@ void equalityTestOverR(Ctxt& equalCt, const vector<Ctxt>& ctxt1, const vector<Ct
     for(unsigned long i = 0; i < numPQ; i++){
         equalityTestOverZ(equalPQ[i], ctxt1[i], ctxt2[i], lengthPQ, ea);
         if(i == 0){
-            equalCt = equalPQ[i];
+            equalCtxt = equalPQ[i];
         }
         else{
-            equalCt.multiplyBy(equalPQ[i]);
+            equalCtxt.multiplyBy(equalPQ[i]);
         }
     }
     // ZZX onePoly;
@@ -59,9 +59,10 @@ void equalityTestOverR(Ctxt& equalCt, const vector<Ctxt>& ctxt1, const vector<Ct
     // }
 }
 
-
-// lessThan if lessTan = 1, otherwise greaterThan
-void comparisonTestOverZ(Ctxt& compCt, const Ctxt& ctxt1, const Ctxt& ctxt2, const bool lessThan, const long numLength, const EncryptedArray& ea){
+// Comparison Test over the Integer
+// if lessThan = 1, lessThan circuit
+// if lessThan = 0, greaterThan circuit
+void comparisonTestOverZ(Ctxt& compCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, const bool lessThan, const long numLength, const EncryptedArray& ea){
     assert(&ctxt1.getPubKey() == & ctxt2.getPubKey());
     
     Ctxt equalCt = ctxt1;
@@ -72,17 +73,17 @@ void comparisonTestOverZ(Ctxt& compCt, const Ctxt& ctxt1, const Ctxt& ctxt2, con
     equalCt.addConstant(onePoly);
     equalCt.addCtxt(ctxt2);
 
-    ctxtProduct(compCt, equalCt, numLength, ea);
-    ea.shift(compCt, -1);
+    ctxtProduct(compCtxt, equalCt, numLength, ea);
+    ea.shift(compCtxt, -1);
 
-    Ctxt tempCtxt1 = compCt, tempCtxt2 = ctxt1, tempCtxt3 = ctxt2;
+    Ctxt tempCtxt1 = compCtxt, tempCtxt2 = ctxt1, tempCtxt3 = ctxt2;
     
     vector<long> mask(ea.size());
     mask[numLength - 1] = 1;
     ea.encode(maskPoly, mask);
     tempCtxt1.multByConstant(maskPoly);
-    compCt.addCtxt(tempCtxt1);
-    compCt.addConstant(maskPoly);
+    compCtxt.addCtxt(tempCtxt1);
+    compCtxt.addConstant(maskPoly);
 
     if(lessThan){ // x < y
         tempCtxt2.addConstant(onePoly);
@@ -91,14 +92,16 @@ void comparisonTestOverZ(Ctxt& compCt, const Ctxt& ctxt1, const Ctxt& ctxt2, con
         tempCtxt3.addConstant(onePoly);
     }
     tempCtxt2.multiplyBy(tempCtxt3);
-    compCt.multiplyBy(tempCtxt2);
-    tempCtxt3 = compCt;
+    compCtxt.multiplyBy(tempCtxt2);
+    tempCtxt3 = compCtxt;
 
-    ctxtSum(compCt, tempCtxt3, ea.size(), ea);
+    ctxtSum(compCtxt, tempCtxt3, ea.size(), ea);
 }
 
-
-void comparisonTestOverR(Ctxt& compCt, const vector<Ctxt>& ctxt1, const vector<Ctxt>& ctxt2, const bool lessThan, const long lengthPQ, const EncryptedArray& ea){
+// Comparison Test over the Real Numbers
+// if lessThan = 1, lessThan circuit
+// if lessThan = 0, greaterThan circuit
+void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector<Ctxt>& ctxt2, const bool lessThan, const long lengthPQ, const EncryptedArray& ea){
     assert(&ctxt1[0].getPubKey() == & ctxt2[0].getPubKey());
     
     const bool greaterThan = 1 - lessThan;
@@ -127,32 +130,32 @@ void comparisonTestOverR(Ctxt& compCt, const vector<Ctxt>& ctxt1, const vector<C
         if(lessThan){
             comparisonTestOverZ(cmpCtxt[2 * i], ctxt1[2 * i], ctxt2[2 * i], lessThan, lengthPQ, ea);
             if(i == 0){
-                compCt.addCtxt(cmpCtxt[0]);
+                compCtxt.addCtxt(cmpCtxt[0]);
             }
             else{
                 ea.shift(tempCtxt1, -2);
                 cmpCtxt[2 * i].multiplyBy(tempCtxt1);
-                compCt.addCtxt(cmpCtxt[2 * i]);
+                compCtxt.addCtxt(cmpCtxt[2 * i]);
             }
             comparisonTestOverZ(cmpCtxt[2 * i + 1], ctxt1[2 * i + 1], ctxt2[2 * i + 1], greaterThan, lengthPQ, ea);
             ea.shift(tempCtxt2, -2);
             cmpCtxt[2 * i + 1].multiplyBy(tempCtxt2);
-            compCt.addCtxt(cmpCtxt[2 * i + 1]);
+            compCtxt.addCtxt(cmpCtxt[2 * i + 1]);
         }
         else{
             comparisonTestOverZ(cmpCtxt[2 * i], ctxt1[2 * i], ctxt2[2 * i], greaterThan, lengthPQ, ea);
             if(i == 0){
-                compCt.addCtxt(cmpCtxt[0]);
+                compCtxt.addCtxt(cmpCtxt[0]);
             }
             else{
                 ea.shift(tempCtxt1, -2);
                 cmpCtxt[2 * i].multiplyBy(tempCtxt1);
-                compCt.addCtxt(cmpCtxt[2 * i]);
+                compCtxt.addCtxt(cmpCtxt[2 * i]);
             }
             comparisonTestOverZ(cmpCtxt[2 * i + 1], ctxt1[2 * i + 1], ctxt2[2 * i + 1], lessThan, lengthPQ, ea);
             ea.shift(tempCtxt2, -2);
             cmpCtxt[2 * i + 1].multiplyBy(tempCtxt2);
-            compCt.addCtxt(cmpCtxt[2 * i + 1]);
+            compCtxt.addCtxt(cmpCtxt[2 * i + 1]);
         }   
     }
 }

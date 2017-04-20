@@ -1,9 +1,9 @@
 #include "sorting.h"
 
 /*
- *  Input: Two Ciphertext X and Y
- *  Output: if X <= Y, then outputs[X, Y]
- *          otherwise, outputs [Y, X]
+ *  @Input      Two Ciphertext X and Y
+ *  @Output     if X <= Y, then outputs[X, Y]
+ *              otherwise, outputs [Y, X]
  */
 void swap(vector<Ctxt>& lessCtxt, vector<Ctxt>& greaterCtxt, const vector<Ctxt>& ctxt1, const vector<Ctxt>& ctxt2, const long lengthPQ, const EncryptedArray& ea){
     assert(&ctxt1[0].getPubKey() == &ctxt2[0].getPubKey());
@@ -19,7 +19,7 @@ void swap(vector<Ctxt>& lessCtxt, vector<Ctxt>& greaterCtxt, const vector<Ctxt>&
     vector<Ctxt> tempCtxt(ctxt2.size(), publicKey);
     
     // compCtxt1 = LT(X, Y) = GT(Y, X)
-    // compCtxt2 = LT(Y, X) = GT(X, Y) = compCtxt + 1
+    // compCtxt2 = LT(Y, X) = GT(X, Y) = compCtxt1 + 1
     comparisonTestOverR(compCtxt1, ctxt1, ctxt2, lessThan, lengthPQ, ea);
     compCtxt2 = compCtxt1;
     compCtxt2.addConstant(flipPoly);
