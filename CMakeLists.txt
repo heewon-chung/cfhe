@@ -40,5 +40,5 @@ target_link_libraries(test_IntegerComparison CFHE -pthread)
 add_executable(test_RealComparison test/realCompTest.cpp)
 target_link_libraries(test_RealComparison CFHE -pthread)
 
-add_executable(test_Sorting test/sortTest.cpp)
-target_link_libraries(test_Sorting CFHE -pthread)
+add_executable(test_PDQ test/pdqTest.cpp)
+target_link_libraries(test_PDQ CFHE -pthread)

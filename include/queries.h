@@ -1,5 +1,5 @@
-#ifndef COMPARISON_H
-#define COMPARISON_H
+#ifndef QUERIES_H
+#define QUERIES_H
 
 #include <cstdlib>
 #include <vector>
@@ -8,6 +8,9 @@
 #include "../../../Library/HElib-master/src/Ctxt.h"
 
 #include "comparison.h"
+#include "EncryptedDatabase.h"
 
-void searchQuery(Ctxt&, const vector<Ctxt>&, const vector<vector<Ctxt>>&, const long&, const EncryptedArray&);
-void searchAndComputeQuery(Ctxt&, Ctxt&, const vector<Ctxt>&, const vector<vector<Ctxt>>&, vector<vector<Ctxt>>&, const bool, const long&, const EncryptedArray&);
+void searchQuery(EncryptedData&, const vector<Ctxt>&, const EncryptedDB&, const EncryptedArray&);
+void searchAndComputeQuery(EncryptedData&, const vector<Ctxt>&, const EncryptedDB&, const EncryptedArray&);
+    
+#endif
