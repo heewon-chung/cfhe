@@ -11,7 +11,8 @@
 #include "utilities.h"
 
 void fullAdder(Ctxt&, const Ctxt&, const Ctxt&, long&, const EncryptedArray&);
-void complement(Ctxt&, const Ctxt&, const long&, const EncryptedArray&);
-void subtract(Ctxt&, const Ctxt&, const Ctxt&, long&, const EncryptedArray&);
+inline void complement(Ctxt&, const Ctxt&, const long&, const EncryptedArray&);
+inline void twoComplement(Ctxt&, const Ctxt&, long&, const EncryptedArray&);
+void subtract(Ctxt&, Ctxt&, const Ctxt&, const Ctxt&, long&, const EncryptedArray&, const FHESecKey&);
 
 #endif
