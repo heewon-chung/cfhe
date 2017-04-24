@@ -29,7 +29,7 @@ void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<
     const FHEPubKey& publicKey = ctxt1[0].getPubKey();
 
     vector<Ctxt> equalPQ(numPQ, publicKey);
-    #pragma omp parallel for
+#pragma omp parallel for
     for(unsigned long i = 0; i < numPQ; i++){
         equalityTestOverZ(equalPQ[i], ctxt1[i], ctxt2[i], lengthPQ, ea);
         if(i == 0){
@@ -125,6 +125,7 @@ void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector
     reverseCtxtProduct(prodCt, equalCt, numPQ, ea);
     Ctxt tempCtxt1 = prodCt, tempCtxt2 = prodCt;
     ea.shift(tempCtxt2, -1);
+    
 #pragma omp parallel for
     for(unsigned long i = 0; i < numPQ / 2; i++){
         if(lessThan){

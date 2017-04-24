@@ -4,7 +4,7 @@ using namespace std;
 using namespace NTL;
 
 // information is contained in the first slot
-void searchQuery(EncryptedData& searchCtxt, const vector<Ctxt>& queryCtxt, const EncryptedDB& encDB, const EncryptedArray& ea){
+void searchQuery(Ctxt& searchCtxt, const vector<Ctxt>& queryCtxt, const EncryptedDB& encDB, const EncryptedArray& ea){
     assert(&queryCtxt[0].getPubKey() == &encDB.cfCtxt[0].getPubKey());
     
     const FHEPubKey& publicKey = queryCtxt[0].getPubKey();
