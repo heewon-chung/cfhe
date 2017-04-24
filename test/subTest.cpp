@@ -20,7 +20,7 @@ int main(){
     long security = 64;
     long m = 6361;
     long L = 20;
-    long currentLength = 6;
+    long bitSize = 4;
 
     FHEcontext context(m, p, r);
     buildModChain(context, L);
@@ -45,25 +45,25 @@ int main(){
     
     Ctxt ct1(publicKey), ct2(publicKey), subCt(publicKey), signCt(publicKey);
 
-    generateProblemInstance(message1, numSlots, currentLength);
-    generateProblemInstance(message2, numSlots, currentLength);
+    generateProblemInstance(message1, numSlots, bitSize);
+    generateProblemInstance(message2, numSlots, bitSize);
     
     cout << endl << "Msg1 = ";
-    Msg1 = printAndReconstructNum(message1, currentLength);
+    Msg1 = printAndReconstructNum(message1, bitSize);
     cout << "Msg2 = ";
-    Msg2 = printAndReconstructNum(message2, currentLength);
+    Msg2 = printAndReconstructNum(message2, bitSize);
     
     ea.encrypt(ct1, publicKey, message1);
     ea.encrypt(ct2, publicKey, message2);
     
-    subtract(subCt, signCt, ct1, ct2, currentLength, ea, secretKey);
+    subtract(subCt, signCt, ct1, ct2, bitSize, ea, secretKey);
 
     ea.decrypt(subCt, secretKey, subResult);
     ea.decrypt(signCt, secretKey, signResult);
 
     cout << endl;
     cout << "Subtraction Result (Plain): " << (Msg1 - Msg2) << endl;
-    cout << "Subtraction Result (Encrypted): " << vector2Long(subResult, currentLength) << endl;
+    cout << "Subtraction Result (Encrypted): " << vector2Long(subResult, bitSize) << endl;
     cout << "Subtraction Levels Left: " << subCt.findBaseLevel() << endl;
 
     return 0;
