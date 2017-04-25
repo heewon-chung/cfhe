@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.6)
-project(continuedfractionHE)
+project (continuedfractionHE)
 
-set(CMAKE_CXX_STANDARD 11)
-set(SOURCE_FILES src/arithmetic.cpp src/comparison.cpp src/generalTools.cpp src/utilities.cpp src/sorting.cpp)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
+set (CMAKE_CXX_STANDARD 11)
+set (SOURCE_FILES src/arithmetic.cpp src/comparison.cpp src/generalTools.cpp src/utilities.cpp src/sorting.cpp)
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 # Configuration Profile
 set (CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS} -pg")
@@ -29,6 +29,8 @@ add_executable(test_Addition test/addTest.cpp)
 target_link_libraries(test_Addition CFHE -pthread)
 add_executable(test_Subtraction test/subTest.cpp)
 target_link_libraries(test_Subtraction CFHE -pthread)
+add_executable(test_Division test/divTest.cpp)
+target_link_libraries(test_Division CFHE -pthread)
 
 add_executable(test_IntegerEquality test/integerEqualTest.cpp)
 target_link_libraries(test_IntegerEquality CFHE -pthread)

@@ -14,6 +14,7 @@ void fullAdder(Ctxt& addCt, const Ctxt& ctxt1, const Ctxt& ctxt2, long& numLengt
     prodCtxt.multiplyBy(ctxt2);
     sumCtxt.addCtxt(ctxt2);
 
+#pragma omp parallel for
     for (unsigned long j = 1; j < tj.size() + 1; j++) {
         Ctxt tempCtxt = tj[j - 1];
         ea.shift(tempCtxt, -j);
@@ -26,28 +27,38 @@ void fullAdder(Ctxt& addCt, const Ctxt& ctxt1, const Ctxt& ctxt2, long& numLengt
         Ctxt iMinusOneCiphertext = prodCtxt;
         Ctxt jCtxt = prodCtxt;
         
-        vector<long> mask;
+        vector<long> mask; 
         ZZX maskPoly;
-        mask.resize(j - 1);
-        mask.push_back(1);
-        mask.resize(ea.size());
+        mask.resize(j - 1);     mask.push_back(1);      mask.resize(ea.size());
         ea.encode(maskPoly, mask);
         
         iMinusOneCiphertext.multByConstant(maskPoly);
         fillAllSlots(jCtxt, iMinusOneCiphertext, mask, ea);
 
-        mask.clear();
-        mask.resize(j, 0);      mask.push_back(1);      mask.resize(ea.size());
+        mask.clear();           mask.resize(j, 0);      mask.push_back(1);      mask.resize(ea.size());
         ea.encode(maskPoly, mask);
 
         tj[j - 1].addConstant(maskPoly);
         tj[j - 1].multiplyBy(jCtxt);
     }
 
+#pragma omp parallel for
     for(unsigned long j = 0; j < tj.size(); j++) {
         sumCtxt.addCtxt(tj[j]);
     }
     addCt = sumCtxt;
+}
+
+
+inline void complement(Ctxt& complementCtxt, const Ctxt& ct, const EncryptedArray& ea){
+    assert(&complementCtxt.getPubKey() == &ct.getPubKey());
+
+    ZZX maskPoly;
+    vector<long> mask(ea.size(), 1);
+    ea.encode(maskPoly, mask);
+
+    complementCtxt = ct;
+    complementCtxt.addConstant(maskPoly);
 }
 
 
@@ -86,7 +97,7 @@ inline void twoComplement(Ctxt& complementCtxt, const Ctxt& ct, long& numLength,
 }
 
 
-void subtract(Ctxt& subCtxt, Ctxt& signCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, const long& numLength, const EncryptedArray& ea, const FHESecKey& secretKey){
+void subtract(Ctxt& subCtxt, Ctxt& signCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, const long& numLength, const EncryptedArray& ea){
     assert(&ctxt1.getPubKey() == &ctxt2.getPubKey());
     assert(numLength <= ea.size());
     
@@ -119,4 +130,76 @@ void subtract(Ctxt& subCtxt, Ctxt& signCtxt, const Ctxt& ctxt1, const Ctxt& ctxt
     tempCtxt.multiplyBy(flipSignCtxt);
     // MSB * subCtxt + (MSB + 1) * 2's complement of subCtxt
     subCtxt.addCtxt(tempCtxt);
+}
+
+
+void restoringDivision(Ctxt& quoCtxt, Ctxt& remCtxt, const Ctxt& numCtxt, const Ctxt& denCtxt, const long& numLength, const EncryptedArray& ea, const FHESecKey& secretKey){
+    assert(&numCtxt.getPubKey() == &denCtxt.getPubKey());
+    assert(numLength <= ea.size());
+
+    const FHEPubKey& publicKey = numCtxt.getPubKey();
+    Ctxt signCtxt(publicKey), tempCtxt(publicKey), tempDenCtxt = denCtxt;
+
+    vector<long> result;
+
+    // P = numCtxt;
+    remCtxt = numCtxt;
+    // D << numLength
+    ea.shift(tempDenCtxt, numLength / 2);
+    
+    for(unsigned long i = numLength / 2 - 1; i >= 0; i--){
+        vector<long> signVector(ea.size());
+        ZZX signPoly;
+        signVector[i] = 1;
+        ea.encode(signPoly, signVector);
+        // 2 * P
+        ea.shift(remCtxt, 1);
+        ea.decrypt(remCtxt, secretKey, result);
+        cout << i << "th 2 * P = " << result << endl;
+        result.clear();
+        // 2 * P - D
+        subtract(tempCtxt, signCtxt, remCtxt, tempDenCtxt, numLength, ea);
+
+        ea.decrypt(tempCtxt, secretKey, result);
+        cout << i << "th subtract = " << result << endl;
+        result.clear();
+
+        // if signCtxt is 1 (2 * P - D > 0), then q_i = 1
+        // if signCtxt is 0 (2 * P - D < 0), then q_i = 0
+        Ctxt extractSignCtxt = signCtxt;
+        extractSignCtxt.multByConstant(signPoly);
+        quoCtxt.addCtxt(extractSignCtxt);
+        
+        ea.decrypt(quoCtxt, secretKey, result);
+        cout << i << "th quotient = " << result << endl;
+        result.clear();
+
+        // if signCtxt is 0, then restore P
+        tempCtxt.multiplyBy(signCtxt);
+        complement(signCtxt, signCtxt, ea);
+        remCtxt.multiplyBy(signCtxt);
+        remCtxt.addCtxt(tempCtxt);
+
+        cout << endl;
+    }
+    ea.shift(remCtxt, -numLength / 2);
+}
+
+
+void rationalToCF(vector<Ctxt>& cfCtxt, const Ctxt& numCtxt, const Ctxt& denCtxt, const long& denBitSize, const EncryptedArray& ea){
+    assert(&numCtxt.getPubKey() == &denCtxt.getPubKey());
+
+    const FHEPubKey& publicKey = denCtxt.getPubKey();
+    long numPQ = 2 * denBitSize;
+    vector<Ctxt> remCtxt(numPQ + 2, publicKey);
+
+    cfCtxt.clear();
+    cfCtxt.resize(numPQ, publicKey);
+
+    remCtxt[0] = numCtxt;
+    remCtxt[1] = denCtxt;
+
+    for(unsigned long i = 2; i < numPQ + 2; i++){
+        // restoringDivision(cfCtxt[i - 2], remCtxt[i], remCtxt[i - 2], remCtxt[i - 1], denBitSize, ea);
+    }
 }
