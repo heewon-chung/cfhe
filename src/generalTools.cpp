@@ -19,6 +19,18 @@ long vector2Long(vector<ZZX>& message, long numLength) {
 }
 
 
+long vector2Long(vector<long>& message, long numLength) {
+    long query = 0;
+    for(unsigned long i = 0; i < numLength; i++) {
+        if(message[i] == 1) {
+            query += (1L << i);
+        }
+    }
+
+    return query;
+}
+
+
 void generateProblemInstance(vector<ZZX>& message, long numSlots, long currentLength) {
     message.clear();
 

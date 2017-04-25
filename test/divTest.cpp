@@ -19,8 +19,8 @@ int main(){
     long r = 1;
     long security = 64;
     long m = 6361;
-    long L = 11;
-    long bitSize = 6;
+    long L = 40;
+    long bitSize = 3;
 
     FHEcontext context(m, p, r);
     buildModChain(context, L);
@@ -40,9 +40,9 @@ int main(){
     long numSlots = ea.size();
     
     ZZ Msg1, Msg2;
-    vector<ZZX> message1, message2, addResult;
+    vector<ZZX> message1, message2, quoResult, remResult;
     
-    Ctxt ct1(publicKey), ct2(publicKey), addCt(publicKey);
+    Ctxt ct1(publicKey), ct2(publicKey), quoCt(publicKey), remCt(publicKey);
 
     generateProblemInstance(message1, numSlots, bitSize);
     generateProblemInstance(message2, numSlots, bitSize);
@@ -55,13 +55,16 @@ int main(){
     ea.encrypt(ct1, publicKey, message1);
     ea.encrypt(ct2, publicKey, message2);
     
-    fullAdder(addCt, ct1, ct2, bitSize, ea);
-    ea.decrypt(addCt, secretKey, addResult);
+    restoringDivision(quoCt, remCt, ct1, ct2, 2 * bitSize, ea, secretKey);
+    ea.decrypt(quoCt, secretKey, quoResult);
+    ea.decrypt(remCt, secretKey, remResult);
 
     cout << endl;
-    cout << "Add Result (Plain): " << (Msg1 + Msg2) << endl;
-    cout << "Add Result (Encrypted): " << vector2Long(addResult, bitSize) << endl;
-    cout << "Add Levels Left: " << addCt.findBaseLevel() << endl;
+    cout << "Quotient Result (Plain): " << (Msg1 / Msg2) << endl;
+    cout << "Quotient Result (Encrypted): " << vector2Long(quoResult, bitSize) << endl;
+    cout << "Remainder Result (Plain): " << (Msg1 % Msg2) << endl;
+    cout << "Remainder Result (Encrypted): " << vector2Long(remResult, bitSize) << endl;
+    cout << "Division Levels Left: " << quoCt.findBaseLevel() << endl;
 
     return 0;
 }

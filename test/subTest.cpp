@@ -56,7 +56,7 @@ int main(){
     ea.encrypt(ct1, publicKey, message1);
     ea.encrypt(ct2, publicKey, message2);
     
-    subtract(subCt, signCt, ct1, ct2, bitSize, ea, secretKey);
+    subtract(subCt, signCt, ct1, ct2, bitSize, ea);
 
     ea.decrypt(subCt, secretKey, subResult);
     ea.decrypt(signCt, secretKey, signResult);
