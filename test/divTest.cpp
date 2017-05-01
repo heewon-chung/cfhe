@@ -19,7 +19,7 @@ int main(){
     long r = 1;
     long security = 64;
     long m = 6361;
-    long L = 40;
+    long L = 60;
     long bitSize = 3;
 
     FHEcontext context(m, p, r);

@@ -7,13 +7,12 @@ using namespace NTL;
 void searchQuery(Ctxt& searchCtxt, const vector<Ctxt>& queryCtxt, const EncryptedDB& encDB, const EncryptedArray& ea){
     assert(&queryCtxt[0].getPubKey() == &encDB.cfCtxt[0].getPubKey());
     
-    const FHEPubKey& publicKey = queryCtxt[0].getPubKey();
-    const EncryptedDB& dbCFCtxt = encDB.getCFCtxt();
-    unsigned long dbSize = encDB.getDBSize();
-
-    vector<Ctxt> isEqual(dbSize, publicKey);
-    vector<long> flip;
-    ZZX flipPoly;
+    const FHEPubKey&    publicKey = queryCtxt[0].getPubKey();
+    const EncryptedDB&  dbCFCtxt = encDB.getCFCtxt();
+    unsigned long       dbSize = encDB.getDBSize();
+    vector<Ctxt>        isEqual(dbSize, publicKey);
+    vector<long>        flip;
+    ZZX                 flipPoly;
 
     flip.push_back(1);
     flip.resize(ea.size());
@@ -37,11 +36,11 @@ void searchQuery(Ctxt& searchCtxt, const vector<Ctxt>& queryCtxt, const Encrypte
 void searchAndComputeQuery(EncryptedData& resultCtxt, const vector<Ctxt>& queryCtxt, const EncryptedDB& encDB, const EncryptedArray& ea){
     assert(&queryCtxt[0].getPubKey() == &encDB.cfCtxt[0].getPubKey());
     
-    const FHEPubKey& publicKey = queryCtxt[0].getPubKey();
-    const EncryptedDB& dbCFCtxt = encDB.getCFCtxt();
-    const vector<Ctxt> dbNumCtxt = encDB.getNumCtxt();
-    const vector<CtxT> dbDenCtxt = encDB.getDenCtxt();
-    unsigned long dbSize = encDB.getDBSize();
+    const FHEPubKey&    publicKey = queryCtxt[0].getPubKey();
+    const EncryptedDB&  dbCFCtxt = encDB.getCFCtxt();
+    const vector<Ctxt>  dbNumCtxt = encDB.getNumCtxt();
+    const vector<CtxT>  dbDenCtxt = encDB.getDenCtxt();
+    unsigned long       dbSize = encDB.getDBSize();
     
     for(unsigned long i = 0; i < dbSize; i++){
         Ctxt isEqual(publicKey);

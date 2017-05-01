@@ -4,31 +4,34 @@ using namespace std;
 using namespace NTL;
 
 
-void fullAdder(Ctxt& addCt, const Ctxt& ctxt1, const Ctxt& ctxt2, long& numLength, const EncryptedArray& ea){
+void fullAdder(Ctxt& addCt, const Ctxt& ctxt1, const Ctxt& ctxt2, long& bitSize, const EncryptedArray& ea){
     assert(&ctxt1.getPubKey() == &ctxt2.getPubKey());
-    numLength++;
+    bitSize++;
 
-    Ctxt prodCtxt = ctxt1, sumCtxt = ctxt1;
-    vector<Ctxt> tj(numLength - 1, sumCtxt);
+    Ctxt            prodCtxt = ctxt1, 
+                    sumCtxt = ctxt1;
+    vector<Ctxt>    carry(bitSize, sumCtxt);
 
     prodCtxt.multiplyBy(ctxt2);
     sumCtxt.addCtxt(ctxt2);
 
-#pragma omp parallel for
-    for (unsigned long j = 1; j < tj.size() + 1; j++) {
-        Ctxt tempCtxt = tj[j - 1];
-        ea.shift(tempCtxt, -j);
-        tj[j - 1] = tempCtxt;
+    #pragma omp parallel for
+    for (unsigned long j = 1; j < carry.size() + 1; j++) {
+        // Ctxt tempCtxt = carry[j - 1];
 
-        reverseCtxtProduct(tj[j - 1], tempCtxt, numLength - j - 1, ea);
-        ea.shift(tj[j - 1], j + 1);
+        // ea.shift(tempCtxt, -j);
+        // carry[j - 1] = tempCtxt;
+        // reverseCtxtProduct(carry[j - 1], tempCtxt, bitSize - j - 1, ea);
+        ea.shift(carry[j - 1], -j);
+        reverseCtxtProduct(carry[j - 1], carry[j - 1], bitSize - j - 1, ea);
+        ea.shift(carry[j - 1], j + 1);
 
         // for j = i - 1
-        Ctxt iMinusOneCiphertext = prodCtxt;
-        Ctxt jCtxt = prodCtxt;
-        
-        vector<long> mask; 
-        ZZX maskPoly;
+        Ctxt            iMinusOneCiphertext = prodCtxt,
+                        jCtxt = prodCtxt;
+        vector<long>    mask;
+        ZZX             maskPoly;
+
         mask.resize(j - 1);     mask.push_back(1);      mask.resize(ea.size());
         ea.encode(maskPoly, mask);
         
@@ -38,13 +41,13 @@ void fullAdder(Ctxt& addCt, const Ctxt& ctxt1, const Ctxt& ctxt2, long& numLengt
         mask.clear();           mask.resize(j, 0);      mask.push_back(1);      mask.resize(ea.size());
         ea.encode(maskPoly, mask);
 
-        tj[j - 1].addConstant(maskPoly);
-        tj[j - 1].multiplyBy(jCtxt);
+        carry[j - 1].addConstant(maskPoly);
+        carry[j - 1].multiplyBy(jCtxt);
     }
 
-#pragma omp parallel for
-    for(unsigned long j = 0; j < tj.size(); j++) {
-        sumCtxt.addCtxt(tj[j]);
+    #pragma omp parallel for
+    for(unsigned long j = 0; j < carry.size(); j++) {
+        sumCtxt.addCtxt(carry[j]);
     }
     addCt = sumCtxt;
 }
@@ -53,8 +56,9 @@ void fullAdder(Ctxt& addCt, const Ctxt& ctxt1, const Ctxt& ctxt2, long& numLengt
 inline void complement(Ctxt& complementCtxt, const Ctxt& ct, const EncryptedArray& ea){
     assert(&complementCtxt.getPubKey() == &ct.getPubKey());
 
-    ZZX maskPoly;
-    vector<long> mask(ea.size(), 1);
+    ZZX             maskPoly;
+    vector<long>    mask(ea.size(), 1);
+
     ea.encode(maskPoly, mask);
 
     complementCtxt = ct;
@@ -66,9 +70,10 @@ inline void complement(Ctxt& complementCtxt, const Ctxt& ct, const long& numLeng
     assert(&complementCtxt.getPubKey() == &ct.getPubKey());
     assert(numLength <= ea.size());
 
-    ZZX maskPoly;
-    vector<long> mask(numLength, 1);
-    mask.resize(ea.size());
+    ZZX             maskPoly;
+    vector<long>    mask(numLength, 1);
+    
+    mask.resize(ea.size());     
     ea.encode(maskPoly, mask);
 
     complementCtxt = ct;
@@ -80,12 +85,14 @@ inline void twoComplement(Ctxt& complementCtxt, const Ctxt& ct, long& numLength,
     assert(&complementCtxt.getPubKey() == &ct.getPubKey());
     assert(numLength <= ea.size());
 
-    const FHEPubKey& publicKey = ct.getPubKey();
-    // complement of ct
-    ZZX maskPoly;
-    vector<long> mask(numLength, 1), one;
-    Ctxt oneCtxt(publicKey);
-    mask.resize(ea.size());     ea.encode(maskPoly, mask);
+    const FHEPubKey&    publicKey = ct.getPubKey();
+    ZZX                 maskPoly;
+    vector<long>        mask(numLength, 1), 
+                        one;
+    Ctxt                oneCtxt(publicKey);
+
+    mask.resize(ea.size());     
+    ea.encode(maskPoly, mask);
     one.push_back(1);           one.resize(ea.size());
 
     complementCtxt = ct;
@@ -101,11 +108,14 @@ void subtract(Ctxt& subCtxt, Ctxt& signCtxt, const Ctxt& ctxt1, const Ctxt& ctxt
     assert(&ctxt1.getPubKey() == &ctxt2.getPubKey());
     assert(numLength <= ea.size());
     
-    long bitSize = numLength;
-    const FHEPubKey& publicKey = ctxt1.getPubKey();
-    ZZX flipPoly, signPoly;
-    Ctxt complementCtxt(publicKey), oneCtxt(publicKey);
-    vector<long> signVector(bitSize), flipVector(ea.size(), 1);
+    long                bitSize = numLength;
+    const FHEPubKey&    publicKey = ctxt1.getPubKey();
+    ZZX                 flipPoly, signPoly;
+    Ctxt                complementCtxt(publicKey), 
+                        oneCtxt(publicKey);
+    vector<long>        signVector(bitSize), 
+                        flipVector(ea.size(), 1);
+    
     signVector.push_back(1);    signVector.resize(ea.size());   ea.encode(signPoly, signVector);    
     ea.encode(flipPoly, flipVector);
 
@@ -137,9 +147,10 @@ void restoringDivision(Ctxt& quoCtxt, Ctxt& remCtxt, const Ctxt& numCtxt, const 
     assert(&numCtxt.getPubKey() == &denCtxt.getPubKey());
     assert(numLength <= ea.size());
 
-    const FHEPubKey& publicKey = numCtxt.getPubKey();
-    Ctxt signCtxt(publicKey), tempCtxt(publicKey), tempDenCtxt = denCtxt;
-
+    const FHEPubKey&    publicKey = numCtxt.getPubKey();
+    Ctxt                signCtxt(publicKey), 
+                        tempCtxt(publicKey), 
+                        tempDenCtxt = denCtxt;
     vector<long> result;
 
     // P = numCtxt;
@@ -147,9 +158,10 @@ void restoringDivision(Ctxt& quoCtxt, Ctxt& remCtxt, const Ctxt& numCtxt, const 
     // D << numLength
     ea.shift(tempDenCtxt, numLength / 2);
     
-    for(unsigned long i = numLength / 2 - 1; i >= 0; i--){
-        vector<long> signVector(ea.size());
-        ZZX signPoly;
+    for(int i = numLength / 2 - 1; i >= 0; i--){
+        vector<long>    signVector(ea.size());
+        ZZX             signPoly;
+        
         signVector[i] = 1;
         ea.encode(signPoly, signVector);
         // 2 * P
@@ -189,9 +201,9 @@ void restoringDivision(Ctxt& quoCtxt, Ctxt& remCtxt, const Ctxt& numCtxt, const 
 void rationalToCF(vector<Ctxt>& cfCtxt, const Ctxt& numCtxt, const Ctxt& denCtxt, const long& denBitSize, const EncryptedArray& ea){
     assert(&numCtxt.getPubKey() == &denCtxt.getPubKey());
 
-    const FHEPubKey& publicKey = denCtxt.getPubKey();
-    long numPQ = 2 * denBitSize;
-    vector<Ctxt> remCtxt(numPQ + 2, publicKey);
+    const FHEPubKey&    publicKey = denCtxt.getPubKey();
+    long                numPQ = 2 * denBitSize;
+    vector<Ctxt>        remCtxt(numPQ + 2, publicKey);
 
     cfCtxt.clear();
     cfCtxt.resize(numPQ, publicKey);

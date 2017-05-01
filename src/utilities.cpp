@@ -8,8 +8,8 @@ using namespace NTL;
 void ctxtSum(Ctxt& addCt, const Ctxt& ct, const long numLength, const EncryptedArray& ea){
     assert(numLength <= ea.size());
 
-    Ctxt tempCtxt1 = ct;
-    Ctxt tempCtxt2 = ct;
+    Ctxt    tempCtxt1 = ct, 
+            tempCtxt2 = ct;
 
     long shiftAmt = 1;
     while(shiftAmt < numLength){
@@ -27,11 +27,14 @@ void ctxtSum(Ctxt& addCt, const Ctxt& ct, const long numLength, const EncryptedA
 // First entry contains information
 void ctxtProduct(Ctxt& mulCt, const Ctxt& ct, const long numLength, const EncryptedArray& ea){
     assert(numLength <= ea.size());
-    Ctxt tempCtxt1 = ct, tempCtxt2 = ct;
+    
+    Ctxt    tempCtxt1 = ct, 
+            tempCtxt2 = ct;
+    long    shiftAmt = 1;
 
-    long shiftAmt = 1;
     while(shiftAmt < numLength){
         vector<long> mask(numLength - shiftAmt);
+        
         mask.resize(numLength, 1);
         mask.resize(ea.size());
         ZZX maskPoly;
@@ -50,12 +53,15 @@ void ctxtProduct(Ctxt& mulCt, const Ctxt& ct, const long numLength, const Encryp
 // last entry contains information
 void reverseCtxtProduct(Ctxt& mulCt, const Ctxt& ct, const long numLength, const EncryptedArray& ea) {
     assert(numLength <= ea.size());
-    Ctxt tempCtxt1 = ct, tempCtxt2 = ct;
+    
+    Ctxt    tempCtxt1 = ct, 
+            tempCtxt2 = ct;
+    long    shiftAmt = 1;
 
-    long shiftAmt = 1;
     while (shiftAmt < numLength) {
-        vector<long> mask(shiftAmt, 1);
-        ZZX maskPoly;
+        vector<long>    mask(shiftAmt, 1);
+        ZZX             maskPoly;
+        
         mask.resize(ea.size());
         ea.encode(maskPoly, mask);
         
@@ -70,28 +76,31 @@ void reverseCtxtProduct(Ctxt& mulCt, const Ctxt& ct, const long numLength, const
 }
 
 
-void fillAllSlots(Ctxt &ciphertextFilled, const Ctxt &ciphertext, const vector<long> &filledPositions, const EncryptedArray& ea) {
+void fillAllSlots(Ctxt& filledCtxt, const Ctxt& orgCtxt, const vector<long>& filledPositions, const EncryptedArray& ea) {
     assert(filledPositions.size() <= ea.size());
-    ciphertextFilled = ciphertext;
-    Ctxt tempCtxt(ciphertext.getPubKey());
+    
+    Ctxt    tempCtxt(orgCtxt.getPubKey());
+    long    firstPos = 0,
+            lastPos = filledPositions.size() - 1,
+            totalLength = filledPositions.size();
 
-    long firstPos = 0;
+    filledCtxt = orgCtxt;
     while (filledPositions[firstPos] != 1) {
         firstPos++;
     }
-    ea.shift(ciphertextFilled, -firstPos);
+    ea.shift(filledCtxt, -firstPos);
 
-    long lastPos = filledPositions.size() - 1;
     while (filledPositions[lastPos] != 1) {
         lastPos--;
     }
-    long range = lastPos - firstPos + 1;
-    long currentLength = range;
-    long totalLength = filledPositions.size();
+
+    long range = lastPos - firstPos + 1,
+         currentLength = range;
+    
     while (currentLength < totalLength) {
-        tempCtxt = ciphertextFilled;
+        tempCtxt = filledCtxt;
         ea.shift(tempCtxt, currentLength);
-        ciphertextFilled += tempCtxt;
+        filledCtxt += tempCtxt;
         currentLength *= 2;
     }
 }

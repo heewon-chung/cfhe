@@ -19,7 +19,7 @@ int main(){
     long r = 1;
     long security = 64;
     long m = 6361;
-    long L = 11;
+    long L = 6;
     long bitSize = 6;
 
     FHEcontext context(m, p, r);
@@ -36,13 +36,11 @@ int main(){
     addFrbMatrices(secretKey);
     addSome1DMatrices(secretKey);
 
-    const EncryptedArray ea(context, F);
-    long numSlots = ea.size();
-    
-    ZZ Msg1, Msg2;
-    vector<ZZX> message1, message2, addResult;
-    
-    Ctxt ct1(publicKey), ct2(publicKey), addCt(publicKey);
+    const EncryptedArray    ea(context, F);
+    long                    numSlots = ea.size();
+    ZZ                      Msg1, Msg2;
+    vector<ZZX>             message1, message2, addResult;
+    Ctxt                    ct1(publicKey), ct2(publicKey), addCt(publicKey);
 
     generateProblemInstance(message1, numSlots, bitSize);
     generateProblemInstance(message2, numSlots, bitSize);
@@ -56,6 +54,7 @@ int main(){
     ea.encrypt(ct2, publicKey, message2);
     
     fullAdder(addCt, ct1, ct2, bitSize, ea);
+    
     ea.decrypt(addCt, secretKey, addResult);
 
     cout << endl;

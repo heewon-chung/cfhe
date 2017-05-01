@@ -8,9 +8,10 @@ void equalityTestOverZ(Ctxt& equalCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, co
     assert(&ctxt1.getPubKey() == & ctxt2.getPubKey());
     assert(numLength <= ea.size());
 
-    Ctxt tempCtxt = ctxt1;
-    ZZX onePoly;
-    vector<long> oneVector(numLength, 1);
+    Ctxt            tempCtxt = ctxt1;
+    ZZX             onePoly;
+    vector<long>    oneVector(numLength, 1);
+
     oneVector.resize(ea.size());
     ea.encode(onePoly, oneVector);
 
@@ -25,16 +26,17 @@ void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<
     assert(&ctxt1[0].getPubKey() == & ctxt2[0].getPubKey());
     assert(ctxt1.size() == ctxt2.size());
 
-    long numPQ = ctxt1.size();
-    const FHEPubKey& publicKey = ctxt1[0].getPubKey();
-
-    vector<Ctxt> equalPQ(numPQ, publicKey);
-#pragma omp parallel for
+    long                numPQ = ctxt1.size();
+    const FHEPubKey&    publicKey = ctxt1[0].getPubKey();
+    vector<Ctxt>        equalPQ(numPQ, publicKey);
+    
+    #pragma omp parallel for
     for(unsigned long i = 0; i < numPQ; i++){
         equalityTestOverZ(equalPQ[i], ctxt1[i], ctxt2[i], lengthPQ, ea);
         if(i == 0){
             equalCtxt = equalPQ[i];
         }
+        // need to reduce multiplicative depth
         else{
             equalCtxt.multiplyBy(equalPQ[i]);
         }
@@ -65,9 +67,10 @@ void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<
 void comparisonTestOverZ(Ctxt& compCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, const bool lessThan, const long numLength, const EncryptedArray& ea){
     assert(&ctxt1.getPubKey() == & ctxt2.getPubKey());
     
-    Ctxt equalCt = ctxt1;
-    ZZX onePoly, maskPoly;
-    vector<long> oneVector(numLength, 1);
+    Ctxt            equalCt = ctxt1;
+    ZZX             onePoly, maskPoly;
+    vector<long>    oneVector(numLength, 1);
+
     oneVector.resize(ea.size());
     ea.encode(onePoly, oneVector);
     equalCt.addConstant(onePoly);
@@ -76,19 +79,19 @@ void comparisonTestOverZ(Ctxt& compCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, c
     ctxtProduct(compCtxt, equalCt, numLength, ea);
     ea.shift(compCtxt, -1);
 
-    Ctxt tempCtxt1 = compCtxt, tempCtxt2 = ctxt1, tempCtxt3 = ctxt2;
-    
-    vector<long> mask(ea.size());
+    Ctxt            tempCtxt1 = compCtxt, tempCtxt2 = ctxt1, tempCtxt3 = ctxt2;
+    vector<long>    mask(ea.size());
+
     mask[numLength - 1] = 1;
     ea.encode(maskPoly, mask);
     tempCtxt1.multByConstant(maskPoly);
     compCtxt.addCtxt(tempCtxt1);
     compCtxt.addConstant(maskPoly);
 
-    if(lessThan){ // x < y
+    if(lessThan){
         tempCtxt2.addConstant(onePoly);
     } 
-    else{ // x > y
+    else{
         tempCtxt3.addConstant(onePoly);
     }
     tempCtxt2.multiplyBy(tempCtxt3);
@@ -104,18 +107,21 @@ void comparisonTestOverZ(Ctxt& compCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, c
 void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector<Ctxt>& ctxt2, const bool lessThan, const long lengthPQ, const EncryptedArray& ea){
     assert(&ctxt1[0].getPubKey() == & ctxt2[0].getPubKey());
     
-    const bool greaterThan = 1 - lessThan;
-    long numPQ = ctxt1.size();
-    const FHEPubKey& publicKey = ctxt1[0].getPubKey();
-    Ctxt equalCt(publicKey), prodCt(publicKey);
-    vector<Ctxt> equalPQ(numPQ, publicKey), cmpCtxt(numPQ, publicKey);
-    vector<long> extractFirstVector;
+    const bool          greaterThan = 1 - lessThan;
+    long                numPQ = ctxt1.size();
+    const FHEPubKey&    publicKey = ctxt1[0].getPubKey();
+    Ctxt                equalCt(publicKey), 
+                        prodCt(publicKey);
+    vector<Ctxt>        equalPQ(numPQ, publicKey), 
+                        cmpCtxt(numPQ, publicKey);
+    vector<long>        extractFirstVector;
+    ZZX                 extractFirstPoly;
+
     extractFirstVector.push_back(1);
     extractFirstVector.resize(ea.size());
-    ZZX extractFirstPoly;
     ea.encode(extractFirstPoly, extractFirstVector);
 
-#pragma omp parallel for
+    #pragma omp parallel for
     for(unsigned long i = 0; i < numPQ; i++){
         equalityTestOverZ(equalPQ[i], ctxt1[i], ctxt2[i], lengthPQ, ea);
         equalPQ[i].multByConstant(extractFirstPoly);
@@ -123,10 +129,12 @@ void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector
         equalCt.addCtxt(equalPQ[i]);
     }
     reverseCtxtProduct(prodCt, equalCt, numPQ, ea);
+
     Ctxt tempCtxt1 = prodCt, tempCtxt2 = prodCt;
+    
     ea.shift(tempCtxt2, -1);
     
-#pragma omp parallel for
+    #pragma omp parallel for
     for(unsigned long i = 0; i < numPQ / 2; i++){
         if(lessThan){
             comparisonTestOverZ(cmpCtxt[2 * i], ctxt1[2 * i], ctxt2[2 * i], lessThan, lengthPQ, ea);
