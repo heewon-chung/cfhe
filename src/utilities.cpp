@@ -8,18 +8,16 @@ using namespace NTL;
 void ctxtSum(Ctxt& addCt, const Ctxt& ct, const long numLength, const EncryptedArray& ea){
     assert(numLength <= ea.size());
 
-    Ctxt    tempCtxt1 = ct, 
-            tempCtxt2 = ct;
+    Ctxt    tempCtxt = ct;
 
+    addCt = ct;
     long shiftAmt = 1;
     while(shiftAmt < numLength){
-        ea.shift(tempCtxt2, -shiftAmt);
-        tempCtxt2.addCtxt(tempCtxt1);
-        tempCtxt1 = tempCtxt2;
+        ea.shift(tempCtxt, -shiftAmt);
+        tempCtxt.addCtxt(addCt);
+        addCt = tempCtxt;
         shiftAmt *= 2;
     }
-
-    addCt = tempCtxt1;
 }
 
 

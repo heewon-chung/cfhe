@@ -40,11 +40,14 @@ int main(){
     const EncryptedArray ea(context, F);
     long numSlots = ea.size();
     
-    RR Msg1, Msg2;
-    vector<vector<ZZX>> message1, message2;
-    vector<long> equalResult;
-    vector<Ctxt> ct1(numPQ, publicKey), ct2(numPQ, publicKey);
-    Ctxt equalCt(publicKey);
+    RR                      Msg1, 
+                            Msg2;
+    vector<vector<ZZX>>     message1, 
+                            message2;
+    vector<long>            equalResult;
+    vector<Ctxt>            ct1(numPQ, publicKey), 
+                            ct2(numPQ, publicKey);
+    Ctxt                    equalCt(publicKey);
     
     generateProblemInstance(message1, numSlots, numPQ, lengthPQ);
     generateProblemInstance(message2, numSlots, numPQ, lengthPQ);
@@ -56,7 +59,7 @@ int main(){
     
     for(unsigned long i = 0; i < numPQ; i++){
         ea.encrypt(ct1[i], publicKey, message1[i]);
-        ea.encrypt(ct2[i], publicKey, message1[i]);
+        ea.encrypt(ct2[i], publicKey, message2[i]);
     }
     
     equalityTestOverR(equalCt, ct1, ct2, lengthPQ, ea);

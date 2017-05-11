@@ -5,10 +5,10 @@ using namespace NTL;
 
 // information is contained in the first slot
 void searchQuery(Ctxt& searchCtxt, const vector<Ctxt>& queryCtxt, const EncryptedDB& encDB, const EncryptedArray& ea){
-    assert(&queryCtxt[0].getPubKey() == &encDB.cfCtxt[0].getPubKey());
+    // assert(&queryCtxt[0].getPubKey() == &encDB.cfCtxt[0].getPubKey());
     
     const FHEPubKey&    publicKey = queryCtxt[0].getPubKey();
-    const EncryptedDB&  dbCFCtxt = encDB.getCFCtxt();
+    // const EncryptedDB&  dbCFCtxt = encDB.getCFCtxt();
     unsigned long       dbSize = encDB.getDBSize();
     vector<Ctxt>        isEqual(dbSize, publicKey);
     vector<long>        flip;
