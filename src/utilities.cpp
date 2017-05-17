@@ -104,3 +104,66 @@ void fillAllSlots(Ctxt& filledCtxt, const Ctxt& orgCtxt, const vector<long>& fil
         currentLength *= 2;
     }
 }
+
+void printSettings( long p, long r, long security, long m, long L, long numSlots)
+{
+	cout << "================== System Settings ==================\n";
+	cout << "plaintext modulus\t\t(p): " << p << endl;
+	cout << "(lifting of p^r\t\t\t(r): " << r << endl;
+	cout << "security level\t\t\t(k): " << security << endl;
+	cout << "m-th cycltomic poly\t\t(m): " << m << endl;
+	cout << "max multiplication depth\t(L): " << L << endl;
+	cout << "number of slots\t\t\t(s): " << numSlots << endl;
+	cout << "=====================================================\n";
+}
+
+#include <chrono>
+// get time in micro seconds for invoking a function (N) times
+// start: starting time
+// end: end time
+// N : number of repetitions 
+double get_time_us( std::chrono::time_point<std::chrono::steady_clock> & start, 
+					std::chrono::time_point<std::chrono::steady_clock> & end, 
+					uint32_t N)
+{
+  auto diff = end-start;
+  return (long double)(std::chrono::duration_cast<std::chrono::microseconds>(diff).count())/N;
+}
+
+// eval polynomial at a point
+ZZ evalPoly( ZZX & poly, ZZ point )
+{
+	ZZ res = to_ZZ(0);
+	for (int i = 0; i < poly.rep.length(); i++)
+	{
+		res = res + poly[i]*power(point, i);
+	}
+}
+
+void mulTree( vector<Ctxt> &inputs, Ctxt &ret)
+{
+	int original_size = inputs.size();
+
+	if (original_size == 1)
+	{
+		ret = inputs[0];
+		return;
+	}
+
+	// multiply two elements and add to the back of the vector
+	#pragma omp parallel for
+	for (int i = 0; i < inputs.size() - 1; i += 2)
+	{
+		//inputs.emplace_back(inputs[i]*inputs[i + 1]);
+		inputs[i].multiplyBy(inputs[i+1]);
+		inputs.emplace_back( inputs[i] );
+	}
+	
+	ret = inputs[inputs.size() - 1]; 
+
+	// remove extra elements
+	while (inputs.size() > original_size)
+	{
+		inputs.erase(inputs.begin() + original_size);
+	}
+}

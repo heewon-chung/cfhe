@@ -1,4 +1,5 @@
 #include "comparison.h"
+#include "utilities.h"
 
 using namespace std;
 using namespace NTL;
@@ -29,18 +30,24 @@ void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<
     long                numPQ = ctxt1.size();
     const FHEPubKey&    publicKey = ctxt1[0].getPubKey();
     vector<Ctxt>        equalPQ(numPQ, publicKey);
-    
+	
     #pragma omp parallel for
     for(unsigned long i = 0; i < numPQ; i++){
+		
         equalityTestOverZ(equalPQ[i], ctxt1[i], ctxt2[i], lengthPQ, ea);
-        if(i == 0){
-            equalCtxt = equalPQ[i];
-        }
-        // need to reduce multiplicative depth
-        else{
-            equalCtxt.multiplyBy(equalPQ[i]);
-        }
+		
+		// using the mulTree function
+//        if(i == 0){
+//            equalCtxt = equalPQ[i];
+//        }
+//        // need to reduce multiplicative depth
+//        else{
+//            equalCtxt.multiplyBy(equalPQ[i]);
+//        }
     }
+	
+	mulTree( equalPQ, equalCtxt );
+	
     // ZZX onePoly;
     // vector<long> oneVector(lengthPQ, 1);
     // oneVector.resize(ea.size());
