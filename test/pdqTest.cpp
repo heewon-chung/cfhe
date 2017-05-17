@@ -2,8 +2,11 @@
 #include <vector>
 
 #include <NTL/RR.h>
-#include "../../../Library/HElib-master/src/EncryptedArray.h"
-#include "../../../Library/HElib-master/src/Ctxt.h"
+//#include "../../../Library/HElib-master/src/EncryptedArray.h"
+//#include "../../../Library/HElib-master/src/Ctxt.h"
+
+#include "EncryptedArray.h"
+#include "Ctxt.h"
 
 #include "EncryptedData.h"
 #include "EncryptedDatabase.h"
