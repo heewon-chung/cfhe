@@ -3,11 +3,12 @@
 
 #include <cstdlib>
 #include <vector>
+//
+//#include "../../../Library/HElib-master/src/EncryptedArray.h"
+//#include "../../../Library/HElib-master/src/Ctxt.h"
 
-#include "../../../Library/HElib-master/src/EncryptedArray.h"
-#include "../../../Library/HElib-master/src/Ctxt.h"
-
-#include "utilities.h"
+#include "EncryptedArray.h"
+#include "Ctxt.h"
 
 void equalityTestOverZ(Ctxt&, const Ctxt&, const Ctxt&, const long, const EncryptedArray&);
 void equalityTestOverR(Ctxt&, const vector<Ctxt>&, const vector<Ctxt>&, const long, const EncryptedArray&);
