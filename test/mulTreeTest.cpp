@@ -25,10 +25,7 @@ T mulTree(vector<T> &inputs)
 	T ret = inputs[inputs.size() - 1]; 
 
 	// remove extra elements
-	while (inputs.size() > original_size)
-	{
-		inputs.erase(inputs.begin() + original_size);
-	}
+	inputs.resize(original_size);
 
 	return ret;
 }

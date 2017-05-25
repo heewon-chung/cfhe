@@ -1,11 +1,12 @@
 #include "comparison.h"
+#include "utilities.h"
 
 using namespace std;
 using namespace NTL;
 
 // Equality Test over the Integers
 void equalityTestOverZ(Ctxt& equalCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, const long numLength, const EncryptedArray& ea){
-    assert(&ctxt1.getPubKey() == &ctxt2.getPubKey());
+    assert(&ctxt1.getPubKey() == & ctxt2.getPubKey());
     assert(numLength <= ea.size());
 
     Ctxt            tempCtxt = ctxt1;
@@ -23,42 +24,55 @@ void equalityTestOverZ(Ctxt& equalCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, co
 
 // Equality Test over the Real Numbers
 void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<Ctxt>& ctxt2, long lengthPQ, const EncryptedArray& ea){
-    assert(&ctxt1[0].getPubKey() == &ctxt2[0].getPubKey());
+    assert(&ctxt1[0].getPubKey() == & ctxt2[0].getPubKey());
     assert(ctxt1.size() == ctxt2.size());
 
     long                numPQ = ctxt1.size();
     const FHEPubKey&    publicKey = ctxt1[0].getPubKey();
-    Ctxt                tempCtxt(publicKey);
     vector<Ctxt>        equalPQ(numPQ, publicKey);
-    // vector<long>        extractFirstSlot;
-    // ZZX                 extractFirstPoly;
-
-    // extractFirstSlot.push_back(1);
-    // extractFirstSlot.resize(ea.size());
-    // ea.encode(extractFirstPoly, extractFirstSlot);
-    
+	
     #pragma omp parallel for
     for(unsigned long i = 0; i < numPQ; i++){
+		
         equalityTestOverZ(equalPQ[i], ctxt1[i], ctxt2[i], lengthPQ, ea);
-        // need to reduce multiplicative depth
-        if(i == 0){
-            equalCtxt = equalPQ[i];
-        }
-        else{
-            equalCtxt.multiplyBy(equalPQ[i]);
-        }
-        // equalPQ[i].multByConstant(extractFirstPoly);
-        // ea.shift(equalPQ[i], i);
-        // tempCtxt.addCtxt(equalPQ[i]);
+		
+		// using the mulTree function
+//        if(i == 0){
+//            equalCtxt = equalPQ[i];
+//        }
+//        // need to reduce multiplicative depth
+//        else{
+//            equalCtxt.multiplyBy(equalPQ[i]);
+//        }
     }
-    // reverseCtxtProduct(equalCtxt, tempCtxt, numPQ, ea);
+	
+	mulTree( equalPQ, equalCtxt );
+	
+    // ZZX onePoly;
+    // vector<long> oneVector(lengthPQ, 1);
+    // oneVector.resize(ea.size());
+    // ea.encode(onePoly, oneVector);
+
+    // for(int i = 0; i < numPQ; i++){
+    //     tempCtxt[i].addCtxt(ctxt2[i]);
+    //     tempCtxt[i].addConstant(onePoly);
+
+    //     ctxtProduct(equalPQ[i], tempCtxt[i], lengthPQ, ea);
+        
+    //     if(i == 0){
+    //         equalCt = equalPQ[i];
+    //     }
+    //     else{
+    //         equalCt.multiplyBy(equalPQ[i]);
+    //     }
+    // }
 }
 
 // Comparison Test over the Integer
 // if lessThan = 1, lessThan circuit
 // if lessThan = 0, greaterThan circuit
 void comparisonTestOverZ(Ctxt& compCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, const bool lessThan, const long numLength, const EncryptedArray& ea){
-    assert(&ctxt1.getPubKey() == &ctxt2.getPubKey());
+    assert(&ctxt1.getPubKey() == & ctxt2.getPubKey());
     
     Ctxt            equalCt = ctxt1;
     ZZX             onePoly, maskPoly;
@@ -98,7 +112,7 @@ void comparisonTestOverZ(Ctxt& compCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, c
 // if lessThan = 1, lessThan circuit
 // if lessThan = 0, greaterThan circuit
 void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector<Ctxt>& ctxt2, const bool lessThan, const long lengthPQ, const EncryptedArray& ea){
-    assert(&ctxt1[0].getPubKey() == &ctxt2[0].getPubKey());
+    assert(&ctxt1[0].getPubKey() == & ctxt2[0].getPubKey());
     
     const bool          greaterThan = 1 - lessThan;
     long                numPQ = ctxt1.size();
@@ -107,12 +121,12 @@ void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector
                         prodCt(publicKey);
     vector<Ctxt>        equalPQ(numPQ, publicKey), 
                         cmpCtxt(numPQ, publicKey);
-    vector<long>        extractFirstSlot;
+    vector<long>        extractFirstVector;
     ZZX                 extractFirstPoly;
 
-    extractFirstSlot.push_back(1);
-    extractFirstSlot.resize(ea.size());
-    ea.encode(extractFirstPoly, extractFirstSlot);
+    extractFirstVector.push_back(1);
+    extractFirstVector.resize(ea.size());
+    ea.encode(extractFirstPoly, extractFirstVector);
 
     #pragma omp parallel for
     for(unsigned long i = 0; i < numPQ; i++){
