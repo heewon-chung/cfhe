@@ -29,6 +29,7 @@ long vector2Long(vector<long>& message, long numLength) {
     return query;
 }
 
+
 vector<long> integer2Vector(int message){
     vector<long> query;
     while(message){
@@ -40,8 +41,27 @@ vector<long> integer2Vector(int message){
         }
         message >>= 1;
     }
-    reverse(query.begin(), query.end());
 
+    return query;
+}
+
+vector<long> vector2Vector(vector<long> partialquotient, int lengthPQ){
+    vector<long> query;
+    for(unsigned long i = 0; i < partialquotient.size(); i++){
+        int j = 0;
+        while(j < lengthPQ){
+            if(partialquotient[i] & 1){
+                query.push_back(1);
+            }
+            else{
+                query.push_back(0);
+            }
+            partialquotient[i] >>= 1;
+            j++;
+        }
+    }
+
+    assert(query.size() == lengthPQ * partialquotient.size());
     for(int i = 0; i < query.size(); i++){
         cout << query[i] << "\t";
     }
