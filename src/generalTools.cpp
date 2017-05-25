@@ -6,7 +6,6 @@
 using namespace std;
 using namespace NTL;
 
-
 long vector2Long(vector<ZZX>& message, long numLength) {
     long query = 0;
     for(unsigned long i = 0; i < numLength; i++) {
@@ -30,6 +29,26 @@ long vector2Long(vector<long>& message, long numLength) {
     return query;
 }
 
+vector<long> integer2Vector(int message){
+    vector<long> query;
+    while(message){
+        if(message & 1){
+            query.push_back(1);
+        }
+        else{
+            query.push_back(0);
+        }
+        message >>= 1;
+    }
+    reverse(query.begin(), query.end());
+
+    for(int i = 0; i < query.size(); i++){
+        cout << query[i] << "\t";
+    }
+    cout << endl;
+
+    return query;
+}
 
 void generateProblemInstance(vector<ZZX>& message, long numSlots, long currentLength) {
     message.clear();
