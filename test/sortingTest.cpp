@@ -1,20 +1,13 @@
 #include <cstdlib>
 #include <vector>
 
-#include <NTL/RR.h>
-//#include "../../../Library/HElib-master/src/EncryptedArray.h"
-//#include "../../../Library/HElib-master/src/Ctxt.h"
-
 #include "EncryptedArray.h"
 #include "Ctxt.h"
-
-#include "EncryptedData.h"
-#include "EncryptedDatabase.h"
 
 #include "generalTools.h"
 #include "utilities.h"
 #include "comparison.h"
-#include "queries.h"
+#include "sorting.h"
 
 using namespace std;
 using namespace NTL;
@@ -27,8 +20,11 @@ int main(){
     long r = 1;
     long security = 64;
     long m = 6361;
-    long L = 20;
-    long currentLength = 6;
+    long L = 30;
+    long numPQ = 3;
+    long lengthPQ = 3;
+    long numData = 5;
+
 
     FHEcontext context(m, p, r);
     buildModChain(context, L);
@@ -47,11 +43,22 @@ int main(){
     const EncryptedArray ea(context, F);
     long numSlots = ea.size();
     
+    vector<vector<Ctxt>> sortedData;
+    vector<vector<Ctxt>> data;
     
-    // cout << endl;
-    // cout << "Add Result (Plain): " << (Msg1 + Msg2) << endl;
-    // cout << "Add Result (Encrypted): " << vector2Long(addResult, currentLength) << endl;
-    // cout << "Add Levels Left: " << addCt.findBaseLevel() << endl;
 
+    for(unsigned long i = 0; i < numData; i++){
+        vector<vector<ZZX>> message;
+        generateProblemInstance(message, numSlots, numPQ, lengthPQ);
+
+        vector<Ctxt> ct(numPQ, publicKey);
+        for(unsigned long j = 0; j < numPQ; j++){
+            ea.encrypt(ct[j], publicKey, message[j]);
+        }
+        data.push_back(ct);
+    }
+
+    directSort(sortedData, data, lengthPQ, ea);
+    
     return 0;
 }

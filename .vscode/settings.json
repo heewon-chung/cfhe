@@ -4,6 +4,8 @@
         "*.tcc": "cpp",
         "vector": "cpp",
         "iostream": "cpp",
-        "cstdlib": "cpp"
+        "cstdlib": "cpp",
+        "random": "cpp",
+        "cmath": "cpp"
     }
 }
