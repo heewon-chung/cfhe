@@ -153,13 +153,11 @@ void directSort(vector<vector<Ctxt>>& sortedData, vector<vector<Ctxt>>& data, co
                 tmpVectorCtxt[k].multiplyBy(data[j][k]);
                 if(j != 0){
                     sortedData[i][k].addCtxt(tmpVectorCtxt[k]);
-                    cout << "1st Test and " << k << endl; 
                 }
             }
             if(j == 0){
                 sortedData.push_back(tmpVectorCtxt);
             }
-            cout << "remaining level = " << sortedData[i][0].findBaseLevel() << endl;
         }
     }
 }
