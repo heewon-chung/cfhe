@@ -145,11 +145,10 @@ void directSort(vector<vector<Ctxt>>& sortedData, vector<vector<Ctxt>>& data, co
             // making all zero except first slot
             tmpCtxt.multByConstant(firstPoly);
             // tmpVectorCtxt = EQTest(rowAddCtxt[i] == j) * data[i]
-            vector<Ctxt> tmpVectorCtxt(numPQ, publicKey);
+            vector<Ctxt> tmpVectorCtxt(numPQ, tmpCtxt);
 
             #pragma omp parallel for
             for(unsigned long k = 0; k < numPQ; k++){
-                tmpVectorCtxt[k] = tmpCtxt;
                 tmpVectorCtxt[k].multiplyBy(data[j][k]);
                 if(j != 0){
                     sortedData[i][k].addCtxt(tmpVectorCtxt[k]);
