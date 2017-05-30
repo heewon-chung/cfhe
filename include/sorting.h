@@ -4,16 +4,17 @@
 #include <cstdlib>
 #include <vector>
 #include <cassert>
-//
-//#include "../../../Library/HElib-master/src/EncryptedArray.h"
-//#include "../../../Library/HElib-master/src/Ctxt.h"
+#include <cmath>
 
 #include "EncryptedArray.h"
 #include "Ctxt.h"
 
 #include "utilities.h"
 #include "comparison.h"
+#include "arithmetic.h"
+#include "generalTools.h"
 
 void swap(vector<Ctxt>&, vector<Ctxt>&, const vector<Ctxt>&, const vector<Ctxt>&, const long, const EncryptedArray&);
+void directSort(vector<vector<Ctxt>>&, vector<vector<Ctxt>>&, const long, const EncryptedArray&);
 
 #endif

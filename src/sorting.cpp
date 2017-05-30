@@ -1,5 +1,7 @@
 #include "sorting.h"
 
+using namespace std;
+
 /*
  *  @Input      Two Ciphertext X and Y
  *  @Output     if X <= Y, then outputs[X, Y]
@@ -60,4 +62,99 @@ void swap(vector<Ctxt>& lessCtxt, vector<Ctxt>& greaterCtxt, const vector<Ctxt>&
         greaterCtxt[i].addCtxt(eqCtxt);
     }
     // greaterCtxt.multiplyBy(compCtxt2);
+}
+
+
+void directSort(vector<vector<Ctxt>>& sortedData, vector<vector<Ctxt>>& data, const long lengthPQ, const EncryptedArray& ea){
+    
+    const FHEPubKey&        publicKey = data[0][0].getPubKey();
+    int                     numData = data.size(),
+                            numPQ = data[0].size(),
+                            numDataBits = log(numData) / log(2) + 1;
+    Ctxt                    tmpCtxt(publicKey);
+    vector<Ctxt>            rowAddCtxt(numData, publicKey),
+                            orderCtxt(numData, publicKey);
+    vector<long>            order,
+                            firstSlot(ea.size());
+    ZZX                     firstPoly;
+    vector<vector<Ctxt>>    comparisonMatrix;
+
+    // sortedData.resize(numData);
+    comparisonMatrix.resize(numData);
+    // making all message slots 0 except first slot
+    firstSlot[0] = 1;
+    ea.encode(firstPoly, firstSlot);
+
+    #pragma omp parallel for
+    for(unsigned long i = 0; i < numData; i++){
+        // construct a comparison matrix whose dimension is numData * numData
+        vector<Ctxt> compRowMatrix(numData, publicKey);
+        
+        #pragma omp parallel for
+        for(unsigned long j = i; j < numData; j++){
+            long numBits = 0;
+            if(j == 0){
+                numBits = 1;
+            }
+            else{
+                numBits = log(j) / log(2) + 1;
+            }
+            // (i, j) component is GT(d_i, d_j)
+            comparisonTestOverR(compRowMatrix[j], data[i], data[j], 1, lengthPQ, ea);
+            compRowMatrix[j].multByConstant(firstPoly);
+            // add each row
+            if(j == i){
+                rowAddCtxt[i] = compRowMatrix[j];
+            }
+            else{
+                fullAdder(rowAddCtxt[i], rowAddCtxt[i], compRowMatrix[j], numBits, ea);
+            }
+            
+        }
+
+        #pragma omp parallel for
+        for(unsigned long j = 0; j < i; j++){
+            long numBits = 0;
+            if(j == 0){
+                numBits = 1;
+            }
+            else{
+                numBits = log(j) / log(2) + 1;
+            }
+            // (i, j) component = (j, i) component + 1
+            compRowMatrix[j] = comparisonMatrix[j][i];
+            compRowMatrix[i].addConstant(firstPoly);
+            // add each row
+            fullAdder(rowAddCtxt[i], rowAddCtxt[i], compRowMatrix[j], numBits, ea);
+        }
+
+        comparisonMatrix[i] = compRowMatrix;
+
+        // generating ciphertexts whose underlying messages are 0 ... numData - 1
+        order = integer2Vector(i);
+        order.resize(ea.size());
+        ea.encrypt(orderCtxt[i], publicKey, order);
+        order.clear();
+    }
+
+    // #pragma omp parallel for
+    // for(unsigned long i = 0; i < numData; i++){
+
+    //     #pragma omp parallel for
+    //     for(unsigned long j = 0; j < numData; j++){
+    //         // EQTest(rowAddCtxt[i] == i)
+    //         equalityTestOverZ(tmpCtxt, rowAddCtxt[i], orderCtxt[j], numDataBits,ea);
+    //         // making all zero except first slot
+    //         tmpCtxt.multByConstant(firstPoly);
+    //         // tmpVectorCtxt = EQTest(rowAddCtxt[i] == j) * data[i]
+    //         vector<Ctxt> tmpVectorCtxt(numPQ, publicKey);
+            
+    //         #pragma omp parallel for
+    //         for(unsigned long k = 0; k < numPQ; k++){
+    //             tmpVectorCtxt[k] = tmpCtxt;
+    //             tmpVectorCtxt[k].multiplyBy(data[j][k]);
+    //             sortedData[i][k].addCtxt(tmpVectorCtxt[k]);
+    //         }
+    //     }
+    // }
 }
