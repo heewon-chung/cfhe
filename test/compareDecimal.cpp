@@ -48,22 +48,28 @@ int main(void){
     const EncryptedArray    ea1(context1, F1),
                             ea2(context2, F2);
 
-    //////////// Decimal
-    int                     message = 7194254;
+    /* Test Set for Message Encoding
+     * 1. [7;5,6,1] = 7.194, 7.1944, 7.19444 (lengthPQ = 3)
+     * 2. [6;3,5,3,2] = 6.3135, 6.31355, 6.313669, 6.3135593 (lengthPQ = 3)
+     * 3. [15;3,10,6,1,2] = 15.3227, 15.32273, 15.3227344 (lengthPQ = 4)
+    */ 
+    
+    // Decimal
+    int                     message = 7194;
+    // int                     message = 63135;
+    // int                     message = 153227;
     vector<long>            messageVector = integer2Vector(message);
     messageVector.resize(ea1.size());
     
-    //////////// Partial Quotient
+    // Continued Fraction
     vector<long>            pq; 
     vector<vector<long>>    pqVector;
-    pq.push_back(7);
-    pq.push_back(5);
-    pq.push_back(6);
-    pq.push_back(1);
-    pq.push_back(3);
-    pq.push_back(5);
+    pq.push_back(7);    pq.push_back(5);    pq.push_back(6);    pq.push_back(1);
+    // pq.push_back(6);    pq.push_back(3);    pq.push_back(5);    pq.push_back(3);     pq.push_back(2);
+    // pq.push_back(15);    pq.push_back(3);    pq.push_back(10);    pq.push_back(6);   pq.push_back(1);    pq.push_back(2);
 
-    int numPQ = pq.size();
+    int numPQ = pq.size(),
+        lengthPQ = 3;
 
     for(unsigned long i = 0; i < numPQ; i++){
         pqVector.push_back(integer2Vector(pq[i]));
@@ -74,30 +80,31 @@ int main(void){
                     Msg2(publicKey1),
                     resultInteger(publicKey1), 
                     resultReal(publicKey2);
-    vector<Ctxt>    pqMsg1(numPQ, publicKey2), 
+    vector<Ctxt>    pqMsg1(numPQ, publicKey2),
                     pqMsg2(numPQ, publicKey2);
 
     ea1.encrypt(Msg1, publicKey1, messageVector);
     ea1.encrypt(Msg2, publicKey1, messageVector);
 
+    // Segmentation Fault in here, but I cannot find the reason....
     for(unsigned long i = 0; i < numPQ; i++){
         ea2.encrypt(pqMsg1[i], publicKey2, pqVector[i]);
         ea2.encrypt(pqMsg2[i], publicKey2, pqVector[i]);
     }
 
-    // double t = GetTime();
-    // cout << "Integer" << endl;
+    TIMER start;
+	TIMER end;
+	start = TIC;
     equalityTestOverZ(resultInteger, Msg1, Msg2, messageVector.size(), ea1);
-    // t = GetTime() - t;
-    // cout << "Time = " << t << endl;
-    // cout << resultInteger.findBaseLevel() << endl;
+    // comparisonTestOverZ(resultInteger, Msg1, Msg2, 1, messageVector.size(), ea1);
+    end = TOC;
+    cout << "Evaluation time for Decimal: " << get_time_us(start, end, 1) / 1000000 << " sec" << endl;
 
-    // t = GetTime();
-    // cout << "Real" << endl;
-    equalityTestOverR(resultReal, pqMsg1, pqMsg2, numPQ, ea2);
-    // t = GetTime() - t;
-    // cout << "Time = " << t << endl;
-    // cout << resultReal.findBaseLevel() << endl;
+    start = TIC;
+    equalityTestOverR(resultReal, pqMsg1, pqMsg2, lengthPQ, ea2);
+    // comparisonTestOverR(reusltReal, pqMsg1, pqMsg2, 1, lengthPQ, ea2);
+    end = TOC;
+    cout << "Evaluation time for CF: " << get_time_us(start, end, 1) / 1000000 << " sec" << endl;
 
     return 0;
 }
