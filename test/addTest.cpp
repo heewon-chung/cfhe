@@ -20,10 +20,10 @@ int main(){
 
     long p = 2;
     long r = 1;
-    long security = 64;
-    long m = 6361;
+    long security = 80;
     long L = 6;
     long bitSize = 6;
+    long m = FindM(security, L, c, p, d, 0, 0);
 
     FHEcontext context(m, p, r);
     buildModChain(context, L);
