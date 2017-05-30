@@ -20,10 +20,10 @@ int main(){
     long r = 1;
     long security = 64;
     long m = 6361;
-    long L = 30;
-    long numPQ = 3;
-    long lengthPQ = 3;
-    long numData = 5;
+    long L = 18;
+    long numPQ = 2;
+    long lengthPQ = 2;
+    long numData = 3;
 
 
     FHEcontext context(m, p, r);
@@ -58,7 +58,13 @@ int main(){
         data.push_back(ct);
     }
 
+    TIMER start;
+	TIMER end;
+	start = TIC;
     directSort(sortedData, data, lengthPQ, ea);
+    end = TOC;
+    cout << "numPQ = " << numPQ << "\t sizePQ = " << lengthPQ << "\t numData = " << numData << endl;
+    cout << "Evaluation time for Sorting: " << get_time_us(start, end, 1) << " microsec" << endl;
     
     return 0;
 }
