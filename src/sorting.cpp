@@ -79,8 +79,6 @@ void directSort(vector<vector<Ctxt>>& sortedData, vector<vector<Ctxt>>& data, co
     ZZX                     firstPoly;
     vector<vector<Ctxt>>    comparisonMatrix;
 
-    // sortedData.resize(numData);
-    comparisonMatrix.resize(numData);
     // making all message slots 0 except first slot
     firstSlot[0] = 1;
     ea.encode(firstPoly, firstSlot);
@@ -128,7 +126,7 @@ void directSort(vector<vector<Ctxt>>& sortedData, vector<vector<Ctxt>>& data, co
             fullAdder(rowAddCtxt[i], rowAddCtxt[i], compRowMatrix[j], numBits, ea);
         }
 
-        comparisonMatrix[i] = compRowMatrix;
+        comparisonMatrix.push_back(compRowMatrix);
 
         // generating ciphertexts whose underlying messages are 0 ... numData - 1
         order = integer2Vector(i);
@@ -137,24 +135,31 @@ void directSort(vector<vector<Ctxt>>& sortedData, vector<vector<Ctxt>>& data, co
         order.clear();
     }
 
-    // #pragma omp parallel for
-    // for(unsigned long i = 0; i < numData; i++){
+    #pragma omp parallel for
+    for(unsigned long i = 0; i < numData; i++){
 
-    //     #pragma omp parallel for
-    //     for(unsigned long j = 0; j < numData; j++){
-    //         // EQTest(rowAddCtxt[i] == i)
-    //         equalityTestOverZ(tmpCtxt, rowAddCtxt[i], orderCtxt[j], numDataBits,ea);
-    //         // making all zero except first slot
-    //         tmpCtxt.multByConstant(firstPoly);
-    //         // tmpVectorCtxt = EQTest(rowAddCtxt[i] == j) * data[i]
-    //         vector<Ctxt> tmpVectorCtxt(numPQ, publicKey);
-            
-    //         #pragma omp parallel for
-    //         for(unsigned long k = 0; k < numPQ; k++){
-    //             tmpVectorCtxt[k] = tmpCtxt;
-    //             tmpVectorCtxt[k].multiplyBy(data[j][k]);
-    //             sortedData[i][k].addCtxt(tmpVectorCtxt[k]);
-    //         }
-    //     }
-    // }
+        #pragma omp parallel for
+        for(unsigned long j = 0; j < numData; j++){
+            // EQTest(rowAddCtxt[i] == i)
+            equalityTestOverZ(tmpCtxt, rowAddCtxt[i], orderCtxt[j], numDataBits,ea);
+            // making all zero except first slot
+            tmpCtxt.multByConstant(firstPoly);
+            // tmpVectorCtxt = EQTest(rowAddCtxt[i] == j) * data[i]
+            vector<Ctxt> tmpVectorCtxt(numPQ, publicKey);
+
+            #pragma omp parallel for
+            for(unsigned long k = 0; k < numPQ; k++){
+                tmpVectorCtxt[k] = tmpCtxt;
+                tmpVectorCtxt[k].multiplyBy(data[j][k]);
+                if(j != 0){
+                    sortedData[i][k].addCtxt(tmpVectorCtxt[k]);
+                    cout << "1st Test and " << k << endl; 
+                }
+            }
+            if(j == 0){
+                sortedData.push_back(tmpVectorCtxt);
+            }
+            cout << "remaining level = " << sortedData[i][0].findBaseLevel() << endl;
+        }
+    }
 }
