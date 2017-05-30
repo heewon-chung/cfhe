@@ -64,7 +64,7 @@ int main(){
     directSort(sortedData, data, lengthPQ, ea);
     end = TOC;
     cout << "numPQ = " << numPQ << "\t sizePQ = " << lengthPQ << "\t numData = " << numData << endl;
-    cout << "Evaluation time for Sorting: " << get_time_us(start, end, 1) << " microsec" << endl;
+    cout << "Evaluation time for Sorting: " << get_time_us(start, end, 1) / 1000000 << " sec" << endl;
     
     return 0;
 }
