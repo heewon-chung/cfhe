@@ -60,7 +60,11 @@ int main(){
     ea.encrypt(ct1, publicKey, message1);
     ea.encrypt(ct2, publicKey, message2);
     
+    TIMER start;
+	TIMER end;
+	start = TIC;
     subtract(subCt, signCt, ct1, ct2, bitSize, ea);
+    end = TOC;
 
     ea.decrypt(subCt, secretKey, subResult);
     ea.decrypt(signCt, secretKey, signResult);
@@ -69,6 +73,6 @@ int main(){
     cout << "Subtraction Result (Plain): " << (Msg1 - Msg2) << endl;
     cout << "Subtraction Result (Encrypted): " << vector2Long(subResult, bitSize) << endl;
     cout << "Subtraction Levels Left: " << subCt.findBaseLevel() << endl;
-
+    cout << "Evaluation time for Binary Subtraction: " << get_time_us(start, end, 1) / 1000000 << " sec" << endl;
     return 0;
 }

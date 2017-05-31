@@ -21,9 +21,9 @@ int main(){
     long security = 64;
     long m = 6361;
     long L = 18;
-    long numPQ = 2;
-    long lengthPQ = 2;
-    long numData = 3;
+    long numPQ = 3;
+    long lengthPQ = 3;
+    long numData = 5;
 
 
     FHEcontext context(m, p, r);

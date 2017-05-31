@@ -56,15 +56,21 @@ int main(){
     
     ea.encrypt(ct1, publicKey, message1);
     ea.encrypt(ct2, publicKey, message2);
+
     
+    TIMER start;
+	TIMER end;
+	start = TIC;
     fullAdder(addCt, ct1, ct2, bitSize, ea);
-    
+    end = TOC;
+
     ea.decrypt(addCt, secretKey, addResult);
 
     cout << endl;
     cout << "Add Result (Plain): " << (Msg1 + Msg2) << endl;
     cout << "Add Result (Encrypted): " << vector2Long(addResult, bitSize) << endl;
     cout << "Add Levels Left: " << addCt.findBaseLevel() << endl;
+    cout << "Evaluation time for Full Adder: " << get_time_us(start, end, 1) / 1000000 << " sec" << endl;
 
     return 0;
 }

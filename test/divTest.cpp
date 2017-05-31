@@ -21,8 +21,8 @@ int main(){
     long p = 2;
     long r = 1;
     long security = 80;
-    long L = 60;
-    long bitSize = 3;
+    long L = 30;
+    long bitSize = 6;
     long c = 3;
     long m = FindM(security, L, c, p, 0, 0, 0);
 
@@ -59,7 +59,12 @@ int main(){
     ea.encrypt(ct1, publicKey, message1);
     ea.encrypt(ct2, publicKey, message2);
     
+    TIMER start;
+	TIMER end;
+	start = TIC;
     restoringDivision(quoCt, remCt, ct1, ct2, 2 * bitSize, ea, secretKey);
+    end = TOC;
+
     ea.decrypt(quoCt, secretKey, quoResult);
     ea.decrypt(remCt, secretKey, remResult);
 
@@ -69,6 +74,6 @@ int main(){
     cout << "Remainder Result (Plain): " << (Msg1 % Msg2) << endl;
     cout << "Remainder Result (Encrypted): " << vector2Long(remResult, bitSize) << endl;
     cout << "Division Levels Left: " << quoCt.findBaseLevel() << endl;
-
+    cout << "Evaluation time for Restrong Division: " << get_time_us(start, end, 1) / 1000000 << " sec" << endl;
     return 0;
 }
