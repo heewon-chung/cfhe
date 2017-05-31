@@ -48,6 +48,7 @@ target_link_libraries(test_RealComparison CFHE -pthread)
 add_executable(test_Sorting test/sortingTest.cpp)
 target_link_libraries(test_Sorting CFHE -pthread)
 
-
-add_executable(test_CompareDecimal test/compareDecimal.cpp)
-target_link_libraries(test_CompareDecimal CFHE -pthread)
+add_executable(test_Decimal test/decimalTest.cpp)
+target_link_libraries(test_Decimal CFHE -pthread)
+add_executable(test_CF test/cfTest.cpp)
+target_link_libraries(test_CF CFHE -pthread)
