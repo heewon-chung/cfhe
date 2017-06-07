@@ -43,11 +43,11 @@ int main(int argc, char* argv[]){
     /* Test Set for Message Encoding
      * 1. [7;5,6,1] = 7.194, 7.1944, 7.19444 (lengthPQ = 3)
      * 2. [6;3,5,3,2] = 6.3135, 6.31355, 6.313669, 6.3135593 (lengthPQ = 3)
-     * 3. [15;3,10,6,1,2] = 15.3227, 15.32273, 15.3227344 (lengthPQ = 4)
+     * 3. [15;3,10,6,10,2] = 15.3227, 15.32273, 15.3227344 (lengthPQ = 4)
     */ 
     
     // Decimal
-    int             message = 15322733,
+    int             message = 15322749,
                     msgSize = 0;
     vector<long>    messageVector = integer2Vector(message);
     messageVector.resize(ea.size());
@@ -66,7 +66,6 @@ int main(int argc, char* argv[]){
     comparisonTestOverZ(resultInteger, Msg1, Msg2, 1, msgSize, ea);
     end = TOC;
     
-    cout << "Decimal Ctxt Levels Left: " << resultInteger.findBaseLevel() << endl;
     cout << "Comparison Evaluation time for Decimal: " << get_time_us(start, end, 1) / 1000000 << " sec" << endl;
 
     return 0;

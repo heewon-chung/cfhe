@@ -66,7 +66,6 @@ int main(int argc, char* argv[]){
     comparisonTestOverZ(resultInteger, Msg1, Msg2, 1, msgSize, ea);
     end = TOC;
     
-    cout << "Decimal Ctxt Levels Left: " << resultInteger.findBaseLevel() << endl;
     cout << "Comparison Evaluation time for Decimal: " << get_time_us(start, end, 1) / 1000000 << " sec" << endl;
 
     return 0;
