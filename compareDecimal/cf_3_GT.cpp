@@ -26,7 +26,7 @@ int main(void){
 	long                    m = FindM(security, L, c, p, d, 0, 0);
     FHEcontext              context(m, p, r);
     buildModChain(context, L);
-    ZZX                     F1 = context.alMod.getFactorsOverZZ()[0];
+    ZZX                     F = context.alMod.getFactorsOverZZ()[0];
 
     // Secret & Public Key Generation
     cout << "Generating Keys... \n";
@@ -38,7 +38,7 @@ int main(void){
     addFrbMatrices(secretKey);     
     addSome1DMatrices(secretKey); 
 
-    const EncryptedArray    ea(context, F1);
+    const EncryptedArray    ea(context, F);
 
     /* Test Set for Message Encoding
      * 1. [7;5,6,1] = 7.194, 7.1944, 7.19444 (lengthPQ = 3)
