@@ -33,39 +33,10 @@ void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<
 	
     #pragma omp parallel for
     for(unsigned long i = 0; i < numPQ; i++){
-		
         equalityTestOverZ(equalPQ[i], ctxt1[i], ctxt2[i], lengthPQ, ea);
-		
-		// using the mulTree function
-//        if(i == 0){
-//            equalCtxt = equalPQ[i];
-//        }
-//        // need to reduce multiplicative depth
-//        else{
-//            equalCtxt.multiplyBy(equalPQ[i]);
-//        }
     }
-	
-	mulTree( equalPQ, equalCtxt );
-	
-    // ZZX onePoly;
-    // vector<long> oneVector(lengthPQ, 1);
-    // oneVector.resize(ea.size());
-    // ea.encode(onePoly, oneVector);
-
-    // for(int i = 0; i < numPQ; i++){
-    //     tempCtxt[i].addCtxt(ctxt2[i]);
-    //     tempCtxt[i].addConstant(onePoly);
-
-    //     ctxtProduct(equalPQ[i], tempCtxt[i], lengthPQ, ea);
-        
-    //     if(i == 0){
-    //         equalCt = equalPQ[i];
-    //     }
-    //     else{
-    //         equalCt.multiplyBy(equalPQ[i]);
-    //     }
-    // }
+	// using the mulTree function	
+	mulTree(equalPQ, equalCtxt);
 }
 
 // Comparison Test over the Integer
@@ -86,7 +57,9 @@ void comparisonTestOverZ(Ctxt& compCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, c
     ctxtProduct(compCtxt, equalCt, numLength, ea);
     ea.shift(compCtxt, -1);
 
-    Ctxt            tempCtxt1 = compCtxt, tempCtxt2 = ctxt1, tempCtxt3 = ctxt2;
+    Ctxt            tempCtxt1 = compCtxt, 
+                    tempCtxt2 = ctxt1, 
+                    tempCtxt3 = ctxt2;
     vector<long>    mask(ea.size());
 
     mask[numLength - 1] = 1;
@@ -97,7 +70,7 @@ void comparisonTestOverZ(Ctxt& compCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, c
 
     if(lessThan){
         tempCtxt2.addConstant(onePoly);
-    } 
+    }
     else{
         tempCtxt3.addConstant(onePoly);
     }
@@ -137,7 +110,8 @@ void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector
     }
     reverseCtxtProduct(prodCt, equalCt, numPQ, ea);
 
-    Ctxt tempCtxt1 = prodCt, tempCtxt2 = prodCt;
+    Ctxt    tempCtxt1 = prodCt, 
+            tempCtxt2 = prodCt;
     
     ea.shift(tempCtxt2, -1);
     
@@ -146,7 +120,7 @@ void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector
         if(lessThan){
             comparisonTestOverZ(cmpCtxt[2 * i], ctxt1[2 * i], ctxt2[2 * i], lessThan, lengthPQ, ea);
             if(i == 0){
-                compCtxt.addCtxt(cmpCtxt[0]);
+                compCtxt = cmpCtxt[0];
             }
             else{
                 ea.shift(tempCtxt1, -2);
@@ -161,7 +135,7 @@ void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector
         else{
             comparisonTestOverZ(cmpCtxt[2 * i], ctxt1[2 * i], ctxt2[2 * i], greaterThan, lengthPQ, ea);
             if(i == 0){
-                compCtxt.addCtxt(cmpCtxt[0]);
+                compCtxt = cmpCtxt[0];
             }
             else{
                 ea.shift(tempCtxt1, -2);
@@ -172,6 +146,6 @@ void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector
             ea.shift(tempCtxt2, -2);
             cmpCtxt[2 * i + 1].multiplyBy(tempCtxt2);
             compCtxt.addCtxt(cmpCtxt[2 * i + 1]);
-        }   
+        }
     }
 }

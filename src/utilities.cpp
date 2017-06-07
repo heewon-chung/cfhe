@@ -56,20 +56,33 @@ void reverseCtxtProduct(Ctxt& mulCt, const Ctxt& ct, const long numLength, const
     
     Ctxt    tempCtxt1 = ct, 
             tempCtxt2 = ct;
-    long    shiftAmt = 1;
+    // long    shiftAmt = 1;
 
-    while (shiftAmt < numLength) {
+    // while (shiftAmt < numLength) {
+    //     vector<long>    mask(shiftAmt, 1);
+    //     ZZX             maskPoly;
+        
+    //     mask.resize(ea.size());
+    //     ea.encode(maskPoly, mask);
+        
+    //     ea.shift(tempCtxt2, shiftAmt);
+    //     tempCtxt2.addConstant(maskPoly);
+    //     tempCtxt2.multiplyBy(tempCtxt1);
+    //     tempCtxt1 = tempCtxt2;
+    //     shiftAmt *= 2;
+    // }
+    #pragma omp parallel for
+    for(unsigned long shiftAmt = 1; shiftAmt < numLength; shiftAmt *= 2){
         vector<long>    mask(shiftAmt, 1);
         ZZX             maskPoly;
-        
+
         mask.resize(ea.size());
         ea.encode(maskPoly, mask);
-        
+
         ea.shift(tempCtxt2, shiftAmt);
         tempCtxt2.addConstant(maskPoly);
         tempCtxt2.multiplyBy(tempCtxt1);
         tempCtxt1 = tempCtxt2;
-        shiftAmt *= 2;
     }
 
     mulCt = tempCtxt1;
@@ -138,6 +151,7 @@ ZZ evalPoly( ZZX & poly, ZZ point )
 	{
 		res = res + poly[i]*power(point, i);
 	}
+    return res;
 }
 
 void mulTree( vector<Ctxt> &inputs, Ctxt &ret)
