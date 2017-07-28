@@ -72,7 +72,7 @@ void reverseCtxtProduct(Ctxt& mulCt, const Ctxt& ct, const long numLength, const
     //     shiftAmt *= 2;
     // }
     #pragma omp parallel for
-    for(unsigned long shiftAmt = 1; shiftAmt < numLength; shiftAmt *= 2){
+    for(unsigned long shiftAmt = 1; shiftAmt < numLength; shiftAmt = shiftAmt * 2){
         vector<long>    mask(shiftAmt, 1);
         ZZX             maskPoly;
 
