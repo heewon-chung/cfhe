@@ -6,6 +6,7 @@
         "iostream": "cpp",
         "cstdlib": "cpp",
         "random": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "cmakeccompilerid.c": "cpp"
     }
 }

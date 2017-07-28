@@ -130,7 +130,6 @@ void printSettings( long p, long r, long security, long m, long L, long numSlots
 	cout << "=====================================================\n";
 }
 
-#include <chrono>
 // get time in micro seconds for invoking a function (N) times
 // start: starting time
 // end: end time

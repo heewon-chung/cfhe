@@ -1,5 +1,8 @@
-#Binary Folder
+# Binary Folder
 bin/
+
+# Visual Studio Folder
+.vscode/
 
 # Compiled Object files
 *.slo

@@ -40,6 +40,8 @@ void gosper(vector<Ctxt>& outputPQ, const vector<Ctxt>& inputPQ, cfObject& objec
         intake(object, inputPQ[i]);
     }
 
+    // intakeInfty(object);
+
     for(unsigned long i = 0; i < numLength; i++){
         outtake(outputPQ[i], object, numLength, ea);
     }
