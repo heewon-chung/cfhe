@@ -1,6 +1,12 @@
 # Binary Folder
 bin/
 
+# Benchmark
+benchmarking/
+
+# comparing
+compareDecimal/
+
 # Visual Studio Folder
 .vscode/
 
