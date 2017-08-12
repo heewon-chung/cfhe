@@ -7,6 +7,7 @@
         "cstdlib": "cpp",
         "random": "cpp",
         "cmath": "cpp",
-        "cmakeccompilerid.c": "cpp"
+        "cmakeccompilerid.c": "cpp",
+        "cassert": "cpp"
     }
 }
