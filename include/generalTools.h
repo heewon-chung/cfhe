@@ -17,9 +17,5 @@ long vector2Long(vector<ZZX>&, long);
 long vector2Long(vector<long>&, long);
 vector<long> integer2Vector(int);
 vector<long> vector2Vector(vector<long>, int);
-void generateProblemInstance(vector<ZZX>&, long, long);
-void generateProblemInstance(vector<vector<ZZX>>&, long, long, long);
-ZZ printAndReconstructNum(vector<ZZX>&, long);
-RR printAndReconstructNum(vector<vector<ZZX>>&, long, long);
 
 #endif
