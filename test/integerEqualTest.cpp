@@ -24,7 +24,7 @@ int main(){
     long security = 80;
 	long d = 0;
 	long c = 3;
-    long L = 8;
+    long L = 7;
     long bitLength = 10;
     long m = FindM(security, L, c, p, d, 0, 0);
     
