@@ -43,7 +43,7 @@ void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<
 // if lessThan = 1, lessThan circuit
 // if lessThan = 0, greaterThan circuit
 void comparisonTestOverZ(Ctxt& compCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, const bool lessThan, const long numLength, const EncryptedArray& ea){
-    assert(&ctxt1.getPubKey() == & ctxt2.getPubKey());
+    assert(&ctxt1.getPubKey() == &ctxt2.getPubKey());
     
     Ctxt            equalCt = ctxt1;
     ZZX             onePoly, maskPoly;
@@ -78,14 +78,15 @@ void comparisonTestOverZ(Ctxt& compCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, c
     compCtxt.multiplyBy(tempCtxt2);
     tempCtxt3 = compCtxt;
 
-    ctxtSum(compCtxt, tempCtxt3, ea.size(), ea);
+    // ctxtSum(compCtxt, tempCtxt3, ea.size(), ea);
+    ctxtSum(compCtxt, tempCtxt3, numLength, ea);
 }
 
 // Comparison Test over the Real Numbers
 // if lessThan = 1, lessThan circuit
 // if lessThan = 0, greaterThan circuit
 void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector<Ctxt>& ctxt2, const bool lessThan, const long lengthPQ, const EncryptedArray& ea){
-    assert(&ctxt1[0].getPubKey() == & ctxt2[0].getPubKey());
+    assert(&ctxt1[0].getPubKey() == &ctxt2[0].getPubKey());
     
     const bool          greaterThan = 1 - lessThan;
     long                numPQ = ctxt1.size();
