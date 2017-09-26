@@ -1,7 +1,7 @@
 #include "generateMsg.h"
 
 
-void generateProblemInstance(vector<long>& message, long numSlots, long bitLength){
+void generateProblemInstance(vector<long>& message, const long numSlots, const long bitLength){
     message.clear();
 
     for(unsigned long i = 0; i < bitLength; i++){
@@ -12,7 +12,7 @@ void generateProblemInstance(vector<long>& message, long numSlots, long bitLengt
 }
 
 
-void generateProblemInstance(vector<vector<long>>& message, long numSlots, long numPQ, long lengthPQ){
+void generateProblemInstance(vector<vector<long>>& message, const long numSlots, const long numPQ, const long lengthPQ){
     assert(numPQ * lengthPQ <= numSlots);
     message.clear();
     message.resize(numPQ);
@@ -26,7 +26,7 @@ void generateProblemInstance(vector<vector<long>>& message, long numSlots, long 
 }
 
 
-ZZ printAndReconstructNum(vector<long>& message, long numLength){
+ZZ printAndReconstructNum(vector<long>& message, const long numLength){
     ZZ Msg = ZZ(0);
     for (unsigned long i = 0; i < numLength; i++) {
         cout << message[i] << ", ";
@@ -40,7 +40,7 @@ ZZ printAndReconstructNum(vector<long>& message, long numLength){
 }
 
 
-RR printAndReconstructNum(vector<vector<long>>& message, long numPQ, long lengthPQ){
+RR printAndReconstructNum(vector<vector<long>>& message, const long numPQ, const long lengthPQ){
     RR Msg = RR(0);
     vector<ZZ> msg(numPQ, ZZ(0));
 
@@ -55,7 +55,7 @@ RR printAndReconstructNum(vector<vector<long>>& message, long numPQ, long length
     }
     cout << endl;
 
-    for(int i = numPQ - 1; i >= 0; i--){ 
+    for(long i = numPQ - 1; i >= 0; i--){ 
         Msg += conv<RR>(msg[i]);
         if(i != 0){
             Msg = 1 / Msg;

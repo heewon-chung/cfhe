@@ -10,9 +10,9 @@
 using namespace std;
 using namespace NTL;
 
-void generateProblemInstance(vector<long>&, long, long);
-void generateProblemInstance(vector<vector<long>>&, long, long, long);
-ZZ printAndReconstructNum(vector<long>&, long);
-RR printAndReconstructNum(vector<vector<long>>&, long, long);
+void generateProblemInstance(vector<long>&, const long, const long);
+void generateProblemInstance(vector<vector<long>>&, const long, const long, const long);
+ZZ printAndReconstructNum(vector<long>&, const long);
+RR printAndReconstructNum(vector<vector<long>>&, const long, const long);
 
 #endif
