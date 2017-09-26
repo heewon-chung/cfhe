@@ -58,6 +58,9 @@ int main(int argc, char* argv[])
     vector<Ctxt>            ct1(numPQ, publicKey), ct2(numPQ, publicKey);
     Ctxt                    compCt(publicKey);
     
+    generateProblemInstance(message1, numSlots, numPQ, lengthPQ);
+    generateProblemInstance(message2, numSlots, numPQ, lengthPQ);
+    
 	cout << endl << "Msg1 (poly) = ";
     Msg1 = printAndReconstructNum(message1, numPQ, lengthPQ);
     cout << "Msg2 (poly) = ";
@@ -74,10 +77,13 @@ int main(int argc, char* argv[])
 	// timers
 	const bool lessThan = 1;
 	string str;
-	if (lessThan == 1)
-		str = "Less Than";
-	else
-		str = "Greater Than";
+	if (lessThan == 1){
+        str = "Less Than";
+    }
+	else{
+        str = "Greater Than";
+    }
+
 	TIMER start;
 	TIMER end;
 	start = TIC;
