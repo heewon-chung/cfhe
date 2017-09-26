@@ -24,10 +24,9 @@ int main(int argc, char* argv[])
 	long d = 0;
 	long c = 3;
     long L = 8;
-    long bitLength = 10;
     long m = FindM(security, L, c, p, d, 0, 0);
-    long lengthPQ = 5;
-    long numPQ = 3;
+    long lengthPQ = 3;
+    long numPQ = 10;
     
     FHEcontext context(m, p, r);
     buildModChain(context, L);
