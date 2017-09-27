@@ -27,10 +27,10 @@ int main(){
     long security = 80;
 	long d = 0;
 	long c = 3;
-    long L = 10;
+    long L = 15;
     long m = FindM(security, L, c, p, d, 0, 0);
-    long lengthPQ = 5;
-    long numPQ = 3;
+    long lengthPQ = 3;
+    long numPQ = 6;
     long precision = 20;
     
     FHEcontext context(m, p, r);
@@ -50,10 +50,6 @@ int main(){
 
     const EncryptedArray ea(context, F);
     long numSlots = ea.size();
-
-    cout << endl;
-    printSettings( p, r, security, m, L, numSlots );
-	cout << "message precision: " << precision << endl;
     
     // Variables for Messages
     vector<vector<long>>    message1, message2;
@@ -93,6 +89,11 @@ int main(){
         bitLength = NumBits(intMsg2);
     }
 
+    cout << endl;
+    printSettings( p, r, security, m, L, numSlots );
+    cout << "message precision: " << precision << endl;
+    cout << "plaintext bit length: " << bitLength << endl;
+
     bitMsg1 = integer2Vector(intMsg1); bitMsg1.resize(numSlots);
     bitMsg2 = integer2Vector(intMsg2); bitMsg2.resize(numSlots);
 
@@ -100,9 +101,9 @@ int main(){
     ea.encrypt(intCtxt2, publicKey, bitMsg2);
 
     start = TIC;
-    comparisonTestOverZ(compCt, intCtxt1, intCtxt2, 1, bitLength, ea);
+    comparisonTestOverZ(compCt, intCtxt1, intCtxt2, 1, numSlots, ea);
 	end = TOC;
-    cout << "Time per integers equality test: " << get_time_us(start, end, 1) << " microsec" << std::endl;
+    cout << "Time per Integers Comparison test: " << get_time_us(start, end, 1) << " microsec" << std::endl;
 
 
     for(unsigned long i = 0; i < numPQ; i++){
@@ -115,6 +116,6 @@ int main(){
     start = TIC;
     comparisonTestOverR(compCt, realCtxt1, realCtxt2, 1, lengthPQ, ea);
 	end = TOC;
-	cout << "Time per reals Equality test: " << get_time_us(start, end, 1) << " microsec" << endl;
+	cout << "Time per Reals Comparison test: " << get_time_us(start, end, 1) << " microsec" << endl;
 
 }
