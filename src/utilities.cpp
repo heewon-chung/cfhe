@@ -122,7 +122,7 @@ void printSettings( long p, long r, long security, long m, long L, long numSlots
 {
 	cout << "================== System Settings ==================\n";
 	cout << "plaintext modulus\t\t(p): " << p << endl;
-	cout << "(lifting of p^r\t\t\t(r): " << r << endl;
+	cout << "lifting of p^r\t\t\t(r): " << r << endl;
 	cout << "security level\t\t\t(k): " << security << endl;
 	cout << "m-th cycltomic poly\t\t(m): " << m << endl;
 	cout << "max multiplication depth\t(L): " << L << endl;
