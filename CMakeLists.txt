@@ -47,3 +47,5 @@ target_link_libraries(test_RealComparison CFHE -pthread)
 
 add_executable(compare_Equality test/equalCompare.cpp)
 target_link_libraries(compare_Equality CFHE -pthread)
+add_executable(compare_Comparison test/comparisonCompare.cpp)
+target_link_libraries(compare_Comparison CFHE -pthread)
