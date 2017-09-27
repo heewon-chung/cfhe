@@ -27,7 +27,7 @@ int main(){
     long security = 80;
 	long d = 0;
 	long c = 3;
-    long L = 15;
+    long L = 7;
     long m = FindM(security, L, c, p, d, 0, 0);
     long lengthPQ = 3;
     long numPQ = 6;
@@ -102,14 +102,14 @@ int main(){
     ea.encrypt(intCtxt2, publicKey, bitMsg2);
 
     start = TIC;
-    comparisonTestOverZ(compCt1, intCtxt1, intCtxt2, 1, numSlots, ea);
+    comparisonTestOverZ(compCt1, intCtxt1, intCtxt2, 1, bitLength, ea);
 	end = TOC;
     cout << "Time per Integers Comparison test: " << get_time_us(start, end, 1) << " microsec" << std::endl;
 
 
     for(unsigned long i = 0; i < numPQ; i++){
-        ea.encrypt(realCtxt1[i], publicKey, bitMsg1);
-        ea.encrypt(realCtxt2[i], publicKey, bitMsg2);
+        ea.encrypt(realCtxt1[i], publicKey, message1[i]);
+        ea.encrypt(realCtxt2[i], publicKey, message2[i]);
     }
 
     start = TIC;
