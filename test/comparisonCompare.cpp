@@ -61,7 +61,8 @@ int main(){
     Ctxt                    intCtxt1(publicKey), intCtxt2(publicKey);
     vector<Ctxt>            realCtxt1(numPQ, publicKey), 
                             realCtxt2(numPQ, publicKey);
-    Ctxt                    compCt(publicKey);
+    Ctxt                    compCt1(publicKey),
+                            compCt2(publicKey);
 
     // Timer
     TIMER start;
@@ -101,7 +102,7 @@ int main(){
     ea.encrypt(intCtxt2, publicKey, bitMsg2);
 
     start = TIC;
-    comparisonTestOverZ(compCt, intCtxt1, intCtxt2, 1, numSlots, ea);
+    comparisonTestOverZ(compCt1, intCtxt1, intCtxt2, 1, numSlots, ea);
 	end = TOC;
     cout << "Time per Integers Comparison test: " << get_time_us(start, end, 1) << " microsec" << std::endl;
 
@@ -111,10 +112,8 @@ int main(){
         ea.encrypt(realCtxt2[i], publicKey, bitMsg2);
     }
 
-    compCt.clear();
-
     start = TIC;
-    comparisonTestOverR(compCt, realCtxt1, realCtxt2, 1, lengthPQ, ea);
+    comparisonTestOverR(compCt2, realCtxt1, realCtxt2, 1, lengthPQ, ea);
 	end = TOC;
 	cout << "Time per Reals Comparison test: " << get_time_us(start, end, 1) << " microsec" << endl;
 
