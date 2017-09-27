@@ -57,9 +57,7 @@ RR printAndReconstructNum(vector<vector<long>>& message, const long numPQ, const
 
     for(long i = numPQ - 1; i >= 0; i--){ 
         Msg += conv<RR>(msg[i]);
-        if(i != 0){
-            Msg = 1 / Msg;
-        }
+        Msg = 1 / Msg;
     }
     
     return Msg;
