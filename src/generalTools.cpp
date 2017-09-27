@@ -45,6 +45,16 @@ vector<long> integer2Vector(int message){
     return query;
 }
 
+vector<long> integer2Vector(ZZ message){
+    vector<long> query;
+    long bitLength = NumBits(message);
+    for(unsigned long i = 0; i < bitLength; i++){
+        query.push_back(bit(message, i));
+    }
+
+    return query;
+}
+
 vector<long> vector2Vector(vector<long> partialquotient, int lengthPQ){
     vector<long> query;
     for(unsigned long i = 0; i < partialquotient.size(); i++){
