@@ -16,7 +16,7 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-set (HELIB_SOURCE_DIRECTORY "/Users/heewon/Documents/_SourceCode/Library/HElib-master/src/")
+set (HELIB_SOURCE_DIRECTORY "/Users/heewon/Documents/SourceCode/Library/HElib-master/src/")
  
 include_directories(${HELIB_SOURCE_DIRECTORY})
 include_directories(include)
@@ -44,3 +44,6 @@ add_executable(test_IntegerComparison test/integerCompTest.cpp)
 target_link_libraries(test_IntegerComparison CFHE -pthread)
 add_executable(test_RealComparison test/realCompTest.cpp)
 target_link_libraries(test_RealComparison CFHE -pthread)
+
+add_executable(compare_Equality test/equalCompare.cpp)
+target_link_libraries(compare_Equality CFHE -pthread)
