@@ -15,19 +15,31 @@ using namespace NTL;
 
 int main(int argc, char* argv[])
 {
-	
-	cout << "Homomorphic Comparison Test over the Real Numbers Started...\n";
+    if(argc != 4){
+        cerr << "\nplease enter three parameter for test\n";
+        cerr << "such as lengthPQ, numPQ and L...\n\n";
+
+        return -1;
+    }
+
+	cout << "\nHomomorphic Comparison Test over the Real Numbers Started...\n";
 	
     long p = 2;
     long r = 1;
     long security = 80;
 	long d = 0;
-	long c = 3;
-    long L = 8;
-    long m = FindM(security, L, c, p, d, 0, 0);
-    long lengthPQ = 3;
-    long numPQ = 10;
+    long c = 3;
+    long L = 0;
+    long lengthPQ = 0;
+    long numPQ = 0;
     
+    if(argc > 1){
+        lengthPQ = atoi(argv[1]);
+		numPQ = atoi(argv[2]);
+		L = atoi(argv[3]);
+    }
+    
+    long m = FindM(security, L, c, p, d, 0, 0);
     FHEcontext context(m, p, r);
     buildModChain(context, L);
     
@@ -47,15 +59,20 @@ int main(int argc, char* argv[])
     long numSlots = ea.size();
 
     cout << endl;
-    printSettings( p, r, security, m, L, numSlots );
-	cout << "number of partial qutients : " << numPQ << endl;
-	cout << "length of each partial qutient : " << lengthPQ << endl;
+    printSettings(L, numPQ, lengthPQ);
     
+    // Variables for Messages
     RR                      Msg1, Msg2;
     vector<vector<long>>    message1, message2;
     vector<long>            compResult;
+
+    // Variables for Encryption
     vector<Ctxt>            ct1(numPQ, publicKey), ct2(numPQ, publicKey);
     Ctxt                    compCt(publicKey);
+
+    // Timer
+    TIMER start;
+    TIMER end;
     
     generateProblemInstance(message1, numSlots, numPQ, lengthPQ);
     generateProblemInstance(message2, numSlots, numPQ, lengthPQ);
@@ -73,7 +90,6 @@ int main(int argc, char* argv[])
         ea.encrypt(ct2[i], publicKey, message2[i]);
     }
 	
-	// timers
 	const bool lessThan = 1;
 	string str;
 	if (lessThan == 1){
@@ -82,29 +98,23 @@ int main(int argc, char* argv[])
 	else{
         str = "Greater Than";
     }
-
-	TIMER start;
-	TIMER end;
+    
 	start = TIC;
     comparisonTestOverR(compCt, ct1, ct2, lessThan, lengthPQ, ea);
 	end = TOC;
-	cout << "Time per reals comparison (" << str << ") test: " << std::endl;
-	cout << "Evaluation time: " << get_time_us(start, end, 1) << " microsec" << endl;
+	cout << "\nTime per Reals Comparison (" << str << ") Evaluation Time: " << get_time_us(start, end, 1) << " microsec" << endl;
     
     ea.decrypt(compCt, secretKey, compResult);
 
-    cout << endl;
-    cout << "Equal Result (Plain): ";
+    cout << "\nComparison Result (Plain): ";
     if(lessThan){
         cout << (Msg1 < Msg2) << endl;
     }
     else {
         cout << (Msg1 > Msg2) << endl;
     }
-    cout << "Equal Result (Encrypted): " << compResult[0] << endl;
-    cout << "Equal Levels Left: " << compCt.findBaseLevel() << endl;
-
-	cout << "Homomorphic Comparison Test over the Real Numbers Terminated...\n";
+    cout << "Comparison Result (Encrypted): " << compResult[0] << endl;
+    cout << "Comparison Levels Left: " << compCt.findBaseLevel() << endl;
 	
     return 0;
 }

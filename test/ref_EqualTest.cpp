@@ -15,9 +15,16 @@
 using namespace std;
 using namespace NTL;
 
-int main(){
-	
-	cout << "Homomorphic Equality Test over the Integers Started...\n";
+int main(int argc, char* argv[]){
+    
+    if(argc != 5){
+        cerr << "\nplease enter three parameter for test\n";
+        cerr << "such as lengthPQ, numPQ, L and precision...\n\n";
+
+        return -1;
+    }
+
+	cout << "\nHomomorphic Equality Test over the Integers Started...\n";
 	
     srand(time(NULL));
     SetSeed(to_ZZ(time(NULL)));
@@ -27,12 +34,19 @@ int main(){
     long security = 80;
 	long d = 0;
 	long c = 3;
-    long L = 7;
-    long m = FindM(security, L, c, p, d, 0, 0);
-    long lengthPQ = 3;
-    long numPQ = 6;
-    long precision = 20;
+    long L = 0;
+    long lengthPQ = 0;
+    long numPQ = 0;
+    long precision = 0;
     
+    if(argc > 1){
+        lengthPQ = atoi(argv[1]);
+		numPQ = atoi(argv[2]);
+        L = atoi(argv[3]);
+        precision = atoi(argv[4]);
+    }
+    
+    long m = FindM(security, L, c, p, d, 0, 0);
     FHEcontext context(m, p, r);
     buildModChain(context, L);
     
@@ -57,12 +71,12 @@ int main(){
     ZZ                      intMsg1, intMsg2; 
     vector<long>            bitMsg1, bitMsg2;
 
-    // Common Variables for Encryption
+    // Variables for Encryption
     Ctxt                    intCtxt1(publicKey), intCtxt2(publicKey);
     vector<Ctxt>            realCtxt1(numPQ, publicKey), 
                             realCtxt2(numPQ, publicKey);
-    Ctxt                    compCt1(publicKey),
-                            compCt2(publicKey);
+    Ctxt                    equalCt(publicKey);
+    vector<long>            equalResult;
 
     // Timer
     TIMER start;
@@ -91,30 +105,24 @@ int main(){
     }
 
     cout << endl;
-    printSettings( p, r, security, m, L, numSlots );
-    cout << "message precision: " << precision << endl;
-    cout << "plaintext bit length: " << bitLength << endl;
+    printSettings(L, numPQ, lengthPQ, precision, bitLength);
 
-    bitMsg1 = integer2Vector(intMsg1); bitMsg1.resize(numSlots);
-    bitMsg2 = integer2Vector(intMsg2); bitMsg2.resize(numSlots);
+    bitMsg1 = integer2Vector(intMsg1, bitLength); bitMsg1.resize(numSlots);
+    bitMsg2 = integer2Vector(intMsg2, bitLength); bitMsg2.resize(numSlots);
 
     ea.encrypt(intCtxt1, publicKey, bitMsg1);
     ea.encrypt(intCtxt2, publicKey, bitMsg2);
 
     start = TIC;
-    comparisonTestOverZ(compCt1, intCtxt1, intCtxt2, 1, bitLength, ea);
+    equalityTestOverZ(equalCt, intCtxt1, intCtxt2, bitLength, ea);
 	end = TOC;
-    cout << "Time per Integers Comparison test: " << get_time_us(start, end, 1) << " microsec" << std::endl;
+    cout << "\nTime per integers equality test: " << get_time_us(start, end, 1) << " microsec" << std::endl;
 
+    ea.decrypt(equalCt, secretKey, equalResult);
+    
+    cout << "\nEqual Result (Plain): " << (intMsg1 == intMsg2) << endl;
+    cout << "Equal Result (Encrypted): " << equalResult[0] << endl;
+    cout << "Equal Levels Left: " << equalCt.findBaseLevel() << endl;
 
-    for(unsigned long i = 0; i < numPQ; i++){
-        ea.encrypt(realCtxt1[i], publicKey, message1[i]);
-        ea.encrypt(realCtxt2[i], publicKey, message2[i]);
-    }
-
-    start = TIC;
-    comparisonTestOverR(compCt2, realCtxt1, realCtxt2, 1, lengthPQ, ea);
-	end = TOC;
-	cout << "Time per Reals Comparison test: " << get_time_us(start, end, 1) << " microsec" << endl;
-
+    return 0;
 }

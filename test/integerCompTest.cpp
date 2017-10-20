@@ -46,7 +46,7 @@ int main(){
     long numSlots = ea.size();
 
     cout << endl;
-    printSettings( p, r, security, m, L, numSlots );
+    // printSettings( p, r, security, m, L, numSlots );
 	cout << "plaintext numbers bit-length: " << bitLength << endl;
     
     ZZ              Msg1, Msg2;

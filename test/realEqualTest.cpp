@@ -12,8 +12,14 @@ using namespace std;
 using namespace NTL;
 
 int main(int argc, char* argv[]){
-	
-	cout << "Homomorphic Equality Test over the Real Numbers Started...\n";
+	if(argc != 4){
+        cout << "\nplease enter three parameter for test...\n";
+        cout << "such as lengthPQ, numPQ, L...\n\n";
+
+        return -1;
+    }
+
+	cout << "\nHomomorphic Equality Test over the Real Numbers Started...\n";
 	
     srand(time(NULL));
     SetSeed(to_ZZ(time(NULL)));
@@ -23,12 +29,17 @@ int main(int argc, char* argv[]){
     long security = 80;
 	long d = 0;
 	long c = 3;
-    long L = 7;
-    long bitLength = 10;
-    long m = FindM(security, L, c, p, d, 0, 0);
-    long lengthPQ = 5;
-    long numPQ = 3;
+    long L = 0;
+    long lengthPQ = 0;
+    long numPQ = 0;
     
+    if(argc > 1){
+        lengthPQ = atoi(argv[1]);
+		numPQ = atoi(argv[2]);
+		L = atoi(argv[3]);
+    }
+    
+    long m = FindM(security, L, c, p, d, 0, 0);
     FHEcontext context(m, p, r);
     buildModChain(context, L);
     
@@ -48,9 +59,7 @@ int main(int argc, char* argv[]){
     long numSlots = ea.size();
 
     cout << endl;
-    printSettings( p, r, security, m, L, numSlots );
-	cout << "number of partial qutients : " << numPQ << endl;
-	cout << "length of each partial qutient : " << lengthPQ << endl;
+    printSettings(L, numPQ, lengthPQ);
     
     RR                      Msg1, Msg2;
     vector<vector<long>>    message1, message2;
@@ -80,16 +89,13 @@ int main(int argc, char* argv[]){
 	start = TIC;
     equalityTestOverR(equalCt, ct1, ct2, lengthPQ, ea);
 	end = TOC;
-	cout << "Time per reals Equality test: " << std::endl;
-	cout << "Evaluation time: " << get_time_us(start, end, 1) << " microsec" << endl;
+	cout << "\nTime per reals Equality test Evaluation time: " << get_time_us(start, end, 1) << " microsec" << endl;
 	
     ea.decrypt(equalCt, secretKey, equalResult);
 
-    cout << "Equal Result (Plain): " << (Msg1 == Msg2) << endl;
+    cout << "\nEqual Result (Plain): " << (Msg1 == Msg2) << endl;
     cout << "Equal Result (Encrypted): " << equalResult[0] << endl;
     cout << "Equal Levels Left: " << equalCt.findBaseLevel() << endl;
 	
-	cout << "Homomorphic Equality Test over the Real Numbers Terminated...\n";
-
     return 0;
 }
