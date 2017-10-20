@@ -118,16 +118,23 @@ void fillAllSlots(Ctxt& filledCtxt, const Ctxt& orgCtxt, const vector<long>& fil
     }
 }
 
-void printSettings( long p, long r, long security, long m, long L, long numSlots)
-{
-	cout << "================== System Settings ==================\n";
-	cout << "plaintext modulus\t\t(p): " << p << endl;
-	cout << "lifting of p^r\t\t\t(r): " << r << endl;
-	cout << "security level\t\t\t(k): " << security << endl;
-	cout << "m-th cycltomic poly\t\t(m): " << m << endl;
-	cout << "max multiplication depth\t(L): " << L << endl;
-	cout << "number of slots\t\t\t(s): " << numSlots << endl;
-	cout << "=====================================================\n";
+void printSettings(long L, long numPQ, long lengthPQ, long precision, long bitLength){
+	cout << "================== Test Environments ==================\n";
+    cout << "number of partial qutients \t: " << numPQ << endl;
+    cout << "length of each partial qutient \t: " << lengthPQ << endl;
+    cout << "number of precision \t\t: " << precision << endl;
+    cout << "number of bit length of input \t: " << bitLength << endl;
+    cout << "max multiplication depth\t: " << L << endl;
+	cout << "=======================================================\n";
+}
+
+
+void printSettings(long L, long numPQ, long lengthPQ){
+    cout << "================== Test Environments ==================\n";
+    cout << "number of partial qutients \t: " << numPQ << endl;
+    cout << "length of each partial qutient \t: " << lengthPQ << endl;
+    cout << "max multiplication depth\t: " << L << endl;
+    cout << "=======================================================\n";
 }
 
 // get time in micro seconds for invoking a function (N) times

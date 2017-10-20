@@ -1,6 +1,3 @@
-//
-// Created by btan on 8/12/16.
-//
 #include "generalTools.h"
 
 using namespace std;
@@ -45,9 +42,8 @@ vector<long> integer2Vector(int message){
     return query;
 }
 
-vector<long> integer2Vector(ZZ message){
+vector<long> integer2Vector(ZZ message, long bitLength){
     vector<long> query;
-    long bitLength = NumBits(message);
     for(unsigned long i = 0; i < bitLength; i++){
         query.push_back(bit(message, i));
     }

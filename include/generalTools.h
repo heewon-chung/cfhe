@@ -16,7 +16,7 @@ using namespace NTL;
 long vector2Long(vector<ZZX>&, long);
 long vector2Long(vector<long>&, long);
 vector<long> integer2Vector(int);
-vector<long> integer2Vector(ZZ);
+vector<long> integer2Vector(ZZ, long);
 vector<long> vector2Vector(vector<long>, int);
 
 #endif

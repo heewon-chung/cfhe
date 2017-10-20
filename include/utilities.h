@@ -18,7 +18,8 @@ void ctxtProduct(Ctxt&, const Ctxt&, const long, const EncryptedArray&);
 void reverseCtxtProduct(Ctxt&, const Ctxt&, const long, const EncryptedArray&);
 void fillAllSlots(Ctxt&, const Ctxt&, const vector<long>&, const EncryptedArray&);
 
-void printSettings( long p, long r, long security, long m, long L, long numSlots );
+void printSettings(long, long, long, long, long);
+void printSettings(long, long, long);
 
 ZZ evalPoly( ZZX & poly, ZZ point );
 
