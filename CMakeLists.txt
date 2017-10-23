@@ -16,7 +16,7 @@ if (OPENMP_FOUND)
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 endif()
 
-set (HELIB_SOURCE_DIRECTORY "/Users/heewon/Documents/SourceCode/Library/HElib-master/src/")
+set (HELIB_SOURCE_DIRECTORY "/home/runghyun/Library/HElib/src/")
  
 include_directories(${HELIB_SOURCE_DIRECTORY})
 include_directories(include)
@@ -26,14 +26,12 @@ include_directories(lib/ntl-10.3.0/include)
 add_subdirectory(lib)
 
 add_library(CFHE ${SOURCE_FILES})
-target_link_libraries(CFHE HElib NTL -lgmp -pthread -lgf2x -lm -O2)
+target_link_libraries(CFHE HElib NTL -lgmp -pthread -lm -O2)
 
 # add_executable(test_Addition test/addTest.cpp)
 # target_link_libraries(test_Addition CFHE -pthread)
 # add_executable(test_Subtraction test/subTest.cpp)
 # target_link_libraries(test_Subtraction CFHE -pthread)
-# add_executable(test_Division test/divTest.cpp)
-# target_link_libraries(test_Division CFHE -pthread)
 
 add_executable(test_IntegerEquality test/integerEqualTest.cpp)
 target_link_libraries(test_IntegerEquality CFHE -pthread)
@@ -49,3 +47,4 @@ add_executable(ref_EqualTest test/ref_EqualTest.cpp)
 target_link_libraries(ref_EqualTest CFHE -pthread)
 add_executable(ref_CompTest test/ref_CompTest.cpp)
 target_link_libraries(ref_CompTest CFHE -pthread)
+
