@@ -105,8 +105,9 @@ void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector
         equalityTestOverZ(equalPQ[i], ctxt1[i], ctxt2[i], lengthPQ, ea);
         equalPQ[i].multByConstant(extractFirstPoly);
         ea.shift(equalPQ[i], i);
+        equalCt.addCtxt(equalPQ[i]);
     }
-    addTree(equalPQ, equalCt);
+    // addTree(equalPQ, equalCt);
     reverseCtxtProduct(prodCt, equalCt, numPQ, ea);
     
     Ctxt    tempCtxt1 = prodCt, 
@@ -127,9 +128,9 @@ void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector
                 compCtxt.addCtxt(cmpCtxt[2 * i]);
             }
             comparisonTestOverZ(cmpCtxt[2 * i + 1], ctxt1[2 * i + 1], ctxt2[2 * i + 1], greaterThan, lengthPQ, ea);
-            ea.shift(tempCtxt2, -2);
+            ea.shift(tempCtxt2, -2 * i);
             cmpCtxt[2 * i + 1].multiplyBy(tempCtxt2);
-            // compCtxt.addCtxt(cmpCtxt[2 * i + 1]);
+            compCtxt.addCtxt(cmpCtxt[2 * i + 1]);
         }
         else{
             comparisonTestOverZ(cmpCtxt[2 * i], ctxt1[2 * i], ctxt2[2 * i], greaterThan, lengthPQ, ea);
@@ -142,10 +143,10 @@ void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector
                 compCtxt.addCtxt(cmpCtxt[2 * i]);
             }
             comparisonTestOverZ(cmpCtxt[2 * i + 1], ctxt1[2 * i + 1], ctxt2[2 * i + 1], lessThan, lengthPQ, ea);
-            ea.shift(tempCtxt2, -2);
+            ea.shift(tempCtxt2, -2 * i);
             cmpCtxt[2 * i + 1].multiplyBy(tempCtxt2);
-            // compCtxt.addCtxt(cmpCtxt[2 * i + 1]);
+            compCtxt.addCtxt(cmpCtxt[2 * i + 1]);
         }
     }
-    addTree(cmpCtxt, compCtxt);
+    // addTree(cmpCtxt, compCtxt);
 }
