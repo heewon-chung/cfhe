@@ -23,7 +23,7 @@ void equalityTestOverZ(Ctxt& equalCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, co
 
 // Equality Test over the Real Numbers
 void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<Ctxt>& ctxt2, long lengthPQ, const EncryptedArray& ea){
-    assert(&ctxt1[0].getPubKey() == & ctxt2[0].getPubKey());
+    assert(&ctxt1[0].getPubKey() == &ctxt2[0].getPubKey());
     assert(ctxt1.size() == ctxt2.size());
 
     long                numPQ = ctxt1.size();
@@ -34,7 +34,7 @@ void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<
     for(unsigned long i = 0; i < numPQ; i++){
         equalityTestOverZ(equalPQ[i], ctxt1[i], ctxt2[i], lengthPQ, ea);
     }
-	// using the mulTree function	
+	// using the mulTree function
 	mulTree(equalPQ, equalCtxt);
 }
 
@@ -47,7 +47,7 @@ void comparisonTestOverZ(Ctxt& compCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, c
     Ctxt            equalCt = ctxt1;
     ZZX             onePoly, maskPoly;
     vector<long>    oneVector(bitLength, 1);
-
+    
     oneVector.resize(ea.size());
     ea.encode(onePoly, oneVector);
     equalCt.addConstant(onePoly);
@@ -56,8 +56,8 @@ void comparisonTestOverZ(Ctxt& compCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, c
     ctxtProduct(compCtxt, equalCt, bitLength, ea);
     ea.shift(compCtxt, -1);
 
-    Ctxt            tempCtxt1 = compCtxt, 
-                    tempCtxt2 = ctxt1, 
+    Ctxt            tempCtxt1 = compCtxt,
+                    tempCtxt2 = ctxt1,
                     tempCtxt3 = ctxt2;
     vector<long>    mask(ea.size());
 
