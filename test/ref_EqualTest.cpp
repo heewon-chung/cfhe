@@ -93,11 +93,11 @@ int main(int argc, char* argv[]){
     cout << "original Msg2 (CF) = ";
     realMsg2 = printAndReconstructNum(message2, numPQ, lengthPQ);
 	
-	cout << "original Msg1 (val): " << realMsg1 << endl;
-    cout << "original Msg2 (val): " << realMsg2 << endl;
-
     intMsg1 = conv<ZZ>(realMsg1 * power(RR(10), precision));
     intMsg2 = conv<ZZ>(realMsg2 * power(RR(10), precision));
+
+    cout << "Input Msg1 (val): " << intMsg1 << endl;
+    cout << "Input Msg2 (val): " << intMsg2 << endl;
 
     long bitLength = NumBits(intMsg1);
     if(bitLength < NumBits(intMsg2)){
@@ -116,12 +116,7 @@ int main(int argc, char* argv[]){
     start = TIC;
     equalityTestOverZ(equalCt, intCtxt1, intCtxt2, bitLength, ea);
 	end = TOC;
-    cout << "\nTime per integers equality test: " << get_time_us(start, end, 1) << " microsec" << std::endl;
-
-    ea.decrypt(equalCt, secretKey, equalResult);
-    
-    cout << "\nEqual Result (Plain): " << (intMsg1 == intMsg2) << endl;
-    cout << "Equal Result (Encrypted): " << equalResult[0] << endl;
+    cout << "\nTime per integers equality test: " << get_time_us(start, end, 1) << " microsec" << std::endl;    
     cout << "Equal Levels Left: " << equalCt.findBaseLevel() << endl;
 
     return 0;

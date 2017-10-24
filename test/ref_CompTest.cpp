@@ -94,8 +94,8 @@ int main(int argc, char* argv[]){
     intMsg1 = conv<ZZ>(realMsg1 * power(RR(10), precision));
     intMsg2 = conv<ZZ>(realMsg2 * power(RR(10), precision));
 
-    cout << "input Msg1 (val): " << intMsg1 << endl;
-    cout << "input Msg2 (val): " << intMsg2 << endl;
+    cout << "Input Msg1 (val): " << intMsg1 << endl;
+    cout << "Input Msg2 (val): " << intMsg2 << endl;
 
     long bitLength = NumBits(intMsg1);
     if(bitLength < NumBits(intMsg2)){
@@ -123,17 +123,6 @@ int main(int argc, char* argv[]){
     comparisonTestOverZ(compCt, ct1, ct2, 1, bitLength, ea);
 	end = TOC;
     cout << "\nTime per Reals Comparison (" << str << ") Evaluation Time: " << get_time_us(start, end, 1) << " microsec" << endl;
-    
-    ea.decrypt(compCt, secretKey, compResult);
-
-    cout << "\nComparison Result (Plain): ";
-    if(lessThan){
-        cout << (intMsg1 < intMsg2) << endl;
-    }
-    else {
-        cout << (intMsg1 > intMsg2) << endl;
-    }
-    cout << "Comparison Result (Encrypted): " << compResult[0] << endl;
     cout << "Comparison Levels Left: " << compCt.findBaseLevel() << endl;
 
     return 0;
