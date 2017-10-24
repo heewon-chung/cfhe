@@ -19,7 +19,7 @@ int main(int argc, char* argv[]){
     
     if(argc != 5){
         cerr << "\nplease enter three parameter for test\n";
-        cerr << "such as lengthPQ, numPQ, L and precision...\n\n";
+        cerr << "such as numPQ, lengthPQ, L and precision...\n\n";
 
         return -1;
     }
@@ -40,8 +40,8 @@ int main(int argc, char* argv[]){
     long precision = 0;
     
     if(argc > 1){
-        lengthPQ = atoi(argv[1]);
-		numPQ = atoi(argv[2]);
+        numPQ = atoi(argv[1]);
+		lengthPQ = atoi(argv[2]);
         L = atoi(argv[3]);
         precision = atoi(argv[4]);
     }

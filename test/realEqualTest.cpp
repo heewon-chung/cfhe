@@ -14,7 +14,7 @@ using namespace NTL;
 int main(int argc, char* argv[]){
 	if(argc != 4){
         cout << "\nplease enter three parameter for test...\n";
-        cout << "such as lengthPQ, numPQ, L...\n\n";
+        cout << "such as numPQ, lengthPQ, L...\n\n";
 
         return -1;
     }
@@ -34,8 +34,8 @@ int main(int argc, char* argv[]){
     long numPQ = 0;
     
     if(argc > 1){
-        lengthPQ = atoi(argv[1]);
-		numPQ = atoi(argv[2]);
+        numPQ = atoi(argv[1]);
+		lengthPQ = atoi(argv[2]);
 		L = atoi(argv[3]);
     }
     
