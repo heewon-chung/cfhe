@@ -56,34 +56,35 @@ void reverseCtxtProduct(Ctxt& mulCt, const Ctxt& ct, const long numLength, const
     
     Ctxt    tempCtxt1 = ct, 
             tempCtxt2 = ct;
-    // long    shiftAmt = 1;
+    long    shiftAmt = 1;
 
-    // while (shiftAmt < numLength) {
-    //     vector<long>    mask(shiftAmt, 1);
-    //     ZZX             maskPoly;
-        
-    //     mask.resize(ea.size());
-    //     ea.encode(maskPoly, mask);
-        
-    //     ea.shift(tempCtxt2, shiftAmt);
-    //     tempCtxt2.addConstant(maskPoly);
-    //     tempCtxt2.multiplyBy(tempCtxt1);
-    //     tempCtxt1 = tempCtxt2;
-    //     shiftAmt *= 2;
-    // }
-    // #pragma omp parallel for
-    for(unsigned long shiftAmt = 1; shiftAmt < numLength; shiftAmt *= 2){
+    while (shiftAmt < numLength) {
         vector<long>    mask(shiftAmt, 1);
         ZZX             maskPoly;
-
+        
         mask.resize(ea.size());
         ea.encode(maskPoly, mask);
-
+        
         ea.shift(tempCtxt2, shiftAmt);
         tempCtxt2.addConstant(maskPoly);
         tempCtxt2.multiplyBy(tempCtxt1);
         tempCtxt1 = tempCtxt2;
+        shiftAmt *= 2;
     }
+
+    // // #pragma omp parallel for
+    // for(unsigned long shiftAmt = 1; shiftAmt < numLength; shiftAmt *= 2){
+    //     vector<long>    mask(shiftAmt, 1);
+    //     ZZX             maskPoly;
+
+    //     mask.resize(ea.size());
+    //     ea.encode(maskPoly, mask);
+
+    //     ea.shift(tempCtxt2, shiftAmt);
+    //     tempCtxt2.addConstant(maskPoly);
+    //     tempCtxt2.multiplyBy(tempCtxt1);
+    //     tempCtxt1 = tempCtxt2;
+    // }
 
     mulCt = tempCtxt1;
 }
@@ -150,8 +151,7 @@ double get_time_us( std::chrono::time_point<std::chrono::steady_clock> & start,
 }
 
 // eval polynomial at a point
-ZZ evalPoly( ZZX & poly, ZZ point )
-{
+ZZ evalPoly(ZZX& poly, ZZ point){
 	ZZ res = to_ZZ(0);
 	for (int i = 0; i < poly.rep.length(); i++)
 	{
@@ -160,30 +160,49 @@ ZZ evalPoly( ZZX & poly, ZZ point )
     return res;
 }
 
-void mulTree( vector<Ctxt> &inputs, Ctxt &ret)
-{
+void addTree(vector<Ctxt>& inputs, Ctxt& ret){
 	int original_size = inputs.size();
 
-	if (original_size == 1)
-	{
+	if (original_size == 1){
 		ret = inputs[0];
 		return;
 	}
 
 	// multiply two elements and add to the back of the vector
 	#pragma omp parallel for
-	for (int i = 0; i < inputs.size() - 1; i += 2)
-	{
-		//inputs.emplace_back(inputs[i]*inputs[i + 1]);
-		inputs[i].multiplyBy(inputs[i+1]);
+	for (int i = 0; i < inputs.size() - 1; i += 2){
+		inputs[i].addCtxt(inputs[i + 1]);
 		inputs.emplace_back( inputs[i] );
 	}
 	
 	ret = inputs[inputs.size() - 1]; 
 
 	// remove extra elements
-	while (inputs.size() > original_size)
-	{
+	while (inputs.size() > original_size){
+		inputs.erase(inputs.begin() + original_size);
+	}
+}
+
+
+void mulTree(vector<Ctxt>& inputs, Ctxt& ret){
+	int original_size = inputs.size();
+
+	if (original_size == 1){
+		ret = inputs[0];
+		return;
+	}
+
+	// multiply two elements and add to the back of the vector
+	#pragma omp parallel for
+	for (int i = 0; i < inputs.size() - 1; i += 2){
+		inputs[i].multiplyBy(inputs[i + 1]);
+		inputs.emplace_back( inputs[i] );
+	}
+	
+	ret = inputs[inputs.size() - 1]; 
+
+	// remove extra elements
+	while (inputs.size() > original_size){
 		inputs.erase(inputs.begin() + original_size);
 	}
 }

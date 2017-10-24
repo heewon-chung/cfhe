@@ -27,6 +27,7 @@ double get_time_us( std::chrono::time_point<std::chrono::steady_clock> & start,
 					std::chrono::time_point<std::chrono::steady_clock> & end, 
 					uint32_t N=1);
 
-void mulTree(vector<Ctxt> &inputs, Ctxt &ret);
+void addTree(vector<Ctxt>&, Ctxt&);
+void mulTree(vector<Ctxt>&, Ctxt&);
 
 #endif
