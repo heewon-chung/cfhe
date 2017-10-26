@@ -35,6 +35,8 @@ target_link_libraries(CFHE HElib NTL -lgmp -pthread -lgf2x -lm -O2)
 # add_executable(test_Division test/divTest.cpp)
 # target_link_libraries(test_Division CFHE -pthread)
 
+add_executable(test_MulTree test/mulTreeTest.cpp)
+target_link_libraries(test_MulTree CFHE -pthread)
 add_executable(test_IntegerEquality test/integerEqualTest.cpp)
 target_link_libraries(test_IntegerEquality CFHE -pthread)
 add_executable(test_RealEquality test/realEqualTest.cpp)
