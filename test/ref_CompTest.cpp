@@ -71,6 +71,7 @@ int main(int argc, char* argv[]){
     ZZ                      intMsg1, intMsg2; 
     vector<long>            bitMsg1, bitMsg2, 
                             compResult;
+    long                    bitLength;
 
     // Variables for Encryption
     Ctxt                    ct1(publicKey), ct2(publicKey);
@@ -97,10 +98,25 @@ int main(int argc, char* argv[]){
     cout << "Input Msg1 (val): " << intMsg1 << endl;
     cout << "Input Msg2 (val): " << intMsg2 << endl;
 
-    long bitLength = NumBits(intMsg1);
-    if(bitLength < NumBits(intMsg2)){
-        bitLength = NumBits(intMsg2);
+    if(precision == 5){
+        bitLength = 17;
     }
+    else if(precision == 10){
+        bitLength = 34;
+    }
+    else if(precision == 20){
+        bitLength = 67;
+    }
+    else if(precision == 30){
+        bitLength = 100;
+    }
+    else{
+        bitLength = NumBits(intMsg1);
+        if(bitLength < NumBits(intMsg2)){
+            bitLength = NumBits(intMsg2);
+        }
+    }
+
     cout << endl;
     printSettings(L, numPQ, lengthPQ, precision, bitLength);
 

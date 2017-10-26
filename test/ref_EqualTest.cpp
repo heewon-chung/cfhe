@@ -70,6 +70,7 @@ int main(int argc, char* argv[]){
     RR                      realMsg1, realMsg2;
     ZZ                      intMsg1, intMsg2; 
     vector<long>            bitMsg1, bitMsg2;
+    long                    bitLength;
 
     // Variables for Encryption
     Ctxt                    intCtxt1(publicKey), intCtxt2(publicKey);
