@@ -169,7 +169,7 @@ void addTree(vector<Ctxt>& inputs, Ctxt& ret){
 	}
 
 	// multiply two elements and add to the back of the vector
-	#pragma omp parallel for
+	// #pragma omp parallel for
 	for (int i = 0; i < inputs.size() - 1; i += 2){
 		inputs[i].addCtxt(inputs[i + 1]);
 		inputs.emplace_back( inputs[i] );
@@ -193,10 +193,10 @@ void mulTree(vector<Ctxt>& inputs, Ctxt& ret){
 	}
 
 	// multiply two elements and add to the back of the vector
-	#pragma omp parallel for
+	// #pragma omp parallel for
 	for (int i = 0; i < inputs.size() - 1; i += 2){
 		inputs[i].multiplyBy(inputs[i + 1]);
-		inputs.emplace_back( inputs[i] );
+		inputs.emplace_back(inputs[i]);
 	}
 	
 	ret = inputs[inputs.size() - 1]; 
