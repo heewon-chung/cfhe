@@ -33,6 +33,8 @@ target_link_libraries(CFHE HElib NTL -lgmp -pthread -lm -O2)
 # add_executable(test_Subtraction test/subTest.cpp)
 # target_link_libraries(test_Subtraction CFHE -pthread)
 
+add_executable(test_MulTree test/mulTreeTest.cpp)
+target_link_libraries(test_MulTree CFHE -pthread)
 add_executable(test_IntegerEquality test/integerEqualTest.cpp)
 target_link_libraries(test_IntegerEquality CFHE -pthread)
 add_executable(test_RealEquality test/realEqualTest.cpp)
