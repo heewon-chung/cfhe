@@ -99,9 +99,23 @@ int main(int argc, char* argv[]){
     cout << "Input Msg1 (val): " << intMsg1 << endl;
     cout << "Input Msg2 (val): " << intMsg2 << endl;
 
-    long bitLength = NumBits(intMsg1);
-    if(bitLength < NumBits(intMsg2)){
-        bitLength = NumBits(intMsg2);
+    if(precision == 5){
+        bitLength = 17;
+    }
+    else if(precision == 10){
+        bitLength = 34;
+    }
+    else if(precision == 20){
+        bitLength = 67;
+    }
+    else if(precision == 30){
+        bitLength = 100;
+    }
+    else{
+        bitLength = NumBits(intMsg1);
+        if(bitLength < NumBits(intMsg2)){
+            bitLength = NumBits(intMsg2);
+        }
     }
 
     cout << endl;
@@ -114,7 +128,7 @@ int main(int argc, char* argv[]){
     ea.encrypt(intCtxt2, publicKey, bitMsg2);
 
     start = TIC;
-    equalityTestOverZ(equalCt, intCtxt1, intCtxt2, bitLength, ea);
+    equalityTestOverZ(equalCt, intCtxt1, intCtxt2, numSlots, ea);
 	end = TOC;
     cout << "\nTime per integers equality test: " << get_time_us(start, end, 1) << " microsec" << std::endl;    
     cout << "Equal Levels Left: " << equalCt.findBaseLevel() << endl;
