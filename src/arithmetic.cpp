@@ -4,13 +4,13 @@ using namespace std;
 using namespace NTL;
 
 
-void fullAdder(Ctxt& addCt, const Ctxt& ctxt1, const Ctxt& ctxt2, long& bitSize, const EncryptedArray& ea){
+void fullAdder(helib::Ctxt& addCt, const helib::Ctxt& ctxt1, const helib::Ctxt& ctxt2, long& bitSize, const helib::EncryptedArray& ea){
     assert(&ctxt1.getPubKey() == &ctxt2.getPubKey());
     bitSize++;
 
-    Ctxt            prodCtxt = ctxt1, 
-                    sumCtxt = ctxt1;
-    vector<Ctxt>    carry(bitSize, sumCtxt);
+    helib::Ctxt             prodCtxt = ctxt1, 
+                            sumCtxt = ctxt1;
+    vector<helib::Ctxt>     carry(bitSize, sumCtxt);
 
     prodCtxt.multiplyBy(ctxt2);
     sumCtxt.addCtxt(ctxt2);
@@ -27,8 +27,8 @@ void fullAdder(Ctxt& addCt, const Ctxt& ctxt1, const Ctxt& ctxt2, long& bitSize,
         ea.shift(carry[j - 1], j + 1);
 
         // for j = i - 1
-        Ctxt            iMinusOneCiphertext = prodCtxt,
-                        jCtxt = prodCtxt;
+        helib::Ctxt            iMinusOneCiphertext = prodCtxt,
+                                jCtxt = prodCtxt;
         vector<long>    mask;
         ZZX             maskPoly;
 
@@ -53,7 +53,7 @@ void fullAdder(Ctxt& addCt, const Ctxt& ctxt1, const Ctxt& ctxt2, long& bitSize,
 }
 
 
-inline void complement(Ctxt& complementCtxt, const Ctxt& ct, const EncryptedArray& ea){
+inline void complement(helib::Ctxt& complementCtxt, const helib::Ctxt& ct, const helib::EncryptedArray& ea){
     assert(&complementCtxt.getPubKey() == &ct.getPubKey());
 
     ZZX             maskPoly;
@@ -66,7 +66,7 @@ inline void complement(Ctxt& complementCtxt, const Ctxt& ct, const EncryptedArra
 }
 
 
-inline void complement(Ctxt& complementCtxt, const Ctxt& ct, const long& numLength, const EncryptedArray& ea){
+inline void complement(helib::Ctxt& complementCtxt, const helib::Ctxt& ct, const long& numLength, const helib::EncryptedArray& ea){
     assert(&complementCtxt.getPubKey() == &ct.getPubKey());
     assert(numLength <= ea.size());
 
@@ -85,11 +85,11 @@ inline void twoComplement(Ctxt& complementCtxt, const Ctxt& ct, long& numLength,
     assert(&complementCtxt.getPubKey() == &ct.getPubKey());
     assert(numLength <= ea.size());
 
-    const FHEPubKey&    publicKey = ct.getPubKey();
+    const helib::PubKey&    publicKey = ct.getPubKey();
     ZZX                 maskPoly;
     vector<long>        mask(numLength, 1), 
                         one;
-    Ctxt                oneCtxt(publicKey);
+    helib::Ctxt                oneCtxt(publicKey);
 
     mask.resize(ea.size());     
     ea.encode(maskPoly, mask);
@@ -104,14 +104,14 @@ inline void twoComplement(Ctxt& complementCtxt, const Ctxt& ct, long& numLength,
 }
 
 
-void subtract(Ctxt& subCtxt, Ctxt& signCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, const long& numLength, const EncryptedArray& ea){
+void subtract(helib::Ctxt& subCtxt, helib::Ctxt& signCtxt, const helib::Ctxt& ctxt1, const helib::Ctxt& ctxt2, const long& numLength, const helib::EncryptedArray& ea){
     assert(&ctxt1.getPubKey() == &ctxt2.getPubKey());
     assert(numLength <= ea.size());
     
     long                bitSize = numLength;
-    const FHEPubKey&    publicKey = ctxt1.getPubKey();
+    const helib::PubKey&    publicKey = ctxt1.getPubKey();
     ZZX                 flipPoly, signPoly;
-    Ctxt                complementCtxt(publicKey), 
+    helib::Ctxt                complementCtxt(publicKey), 
                         oneCtxt(publicKey);
     vector<long>        signVector(bitSize), 
                         flipVector(ea.size(), 1);
@@ -128,12 +128,12 @@ void subtract(Ctxt& subCtxt, Ctxt& signCtxt, const Ctxt& ctxt1, const Ctxt& ctxt
     // discard the MSB
     subCtxt.addConstant(signPoly);
 
-    Ctxt tempCtxt = subCtxt;
+    helib::Ctxt tempCtxt = subCtxt;
     // For MSB = 1 (ctxt1 > ctxt2),
     // MSB * subCtxt
     subCtxt.multiplyBy(signCtxt);
     // For MSB = 0 (ctxt1 < ctxt2),
-    Ctxt flipSignCtxt = signCtxt;
+    helib::Ctxt flipSignCtxt = signCtxt;
     flipSignCtxt.addConstant(flipPoly);
     twoComplement(tempCtxt, tempCtxt, bitSize, ea);
     // (MSB + 1) * 2's complement of subCtxt
@@ -143,12 +143,12 @@ void subtract(Ctxt& subCtxt, Ctxt& signCtxt, const Ctxt& ctxt1, const Ctxt& ctxt
 }
 
 
-void restoringDivision(Ctxt& quoCtxt, Ctxt& remCtxt, const Ctxt& numCtxt, const Ctxt& denCtxt, const long& numLength, const EncryptedArray& ea, const FHESecKey& secretKey){
+void restoringDivision(helib::Ctxt& quoCtxt, helib::Ctxt& remCtxt, const helib::Ctxt& numCtxt, const helib::Ctxt& denCtxt, const long& numLength, const helib::EncryptedArray& ea, const helib::SecKey& secretKey){
     assert(&numCtxt.getPubKey() == &denCtxt.getPubKey());
     assert(numLength <= ea.size());
 
-    const FHEPubKey&    publicKey = numCtxt.getPubKey();
-    Ctxt                signCtxt(publicKey), 
+    const helib::PubKey&    publicKey = numCtxt.getPubKey();
+    helib::Ctxt                signCtxt(publicKey), 
                         tempCtxt(publicKey), 
                         tempDenCtxt = denCtxt;
     vector<long> result;
@@ -178,7 +178,7 @@ void restoringDivision(Ctxt& quoCtxt, Ctxt& remCtxt, const Ctxt& numCtxt, const 
 
         // if signCtxt is 1 (2 * P - D > 0), then q_i = 1
         // if signCtxt is 0 (2 * P - D < 0), then q_i = 0
-        Ctxt extractSignCtxt = signCtxt;
+        helib::Ctxt extractSignCtxt = signCtxt;
         extractSignCtxt.multByConstant(signPoly);
         quoCtxt.addCtxt(extractSignCtxt);
         
@@ -198,12 +198,12 @@ void restoringDivision(Ctxt& quoCtxt, Ctxt& remCtxt, const Ctxt& numCtxt, const 
 }
 
 
-void rationalToCF(vector<Ctxt>& cfCtxt, const Ctxt& numCtxt, const Ctxt& denCtxt, const long& denBitSize, const EncryptedArray& ea){
+void rationalToCF(vector<helib::Ctxt>& cfCtxt, const helib::Ctxt& numCtxt, const helib::Ctxt& denCtxt, const long& denBitSize, const helib::EncryptedArray& ea){
     assert(&numCtxt.getPubKey() == &denCtxt.getPubKey());
 
-    const FHEPubKey&    publicKey = denCtxt.getPubKey();
+    const helib::PubKey&    publicKey = denCtxt.getPubKey();
     long                numPQ = 2 * denBitSize;
-    vector<Ctxt>        remCtxt(numPQ + 2, publicKey);
+    vector<helib::Ctxt>        remCtxt(numPQ + 2, publicKey);
 
     cfCtxt.clear();
     cfCtxt.resize(numPQ, publicKey);

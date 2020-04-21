@@ -9,6 +9,9 @@
 #include <helib/Ctxt.h>
 #include "comparison.h"
 
+using namespace std;
+using namespace helib;
+
 // z = (numConst + numCoeff * x) / (denConst + denCoeff * x)
 typedef struct cfObject{
     helib::Ctxt numConst;

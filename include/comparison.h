@@ -8,6 +8,9 @@
 #include <helib/FHE.h>
 #include "utilities.h"
 
+using namespace std;
+using namespace helib;
+
 void equalityTestOverZ(helib::Ctxt&, const helib::Ctxt&, const helib::Ctxt&, const long, const helib::EncryptedArray&);
 void equalityTestOverR(helib::Ctxt&, const vector<helib::Ctxt>&, const vector<helib::Ctxt>&, const long, const helib::EncryptedArray&);
 void comparisonTestOverZ(helib::Ctxt&, const helib::Ctxt&, const helib::Ctxt&, const bool, const long, const helib::EncryptedArray&);

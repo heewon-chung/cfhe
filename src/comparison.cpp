@@ -2,6 +2,7 @@
 
 using namespace std;
 using namespace NTL;
+using namespace helib;
 
 // Equality Test over the Integers
 void equalityTestOverZ(Ctxt& equalCtxt, const Ctxt& ctxt1, const Ctxt& ctxt2, const long bitLength, const EncryptedArray& ea){

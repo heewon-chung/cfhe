@@ -12,7 +12,7 @@ project(CFHE
 
 find_package(helib 1.0.0 EXACT REQUIRED)
 
-set (SOURCE_FILES src/arithmetic.cpp src/comparison.cpp src/generalTools.cpp src/utilities.cpp src/generateMsg.cpp)
+set (SOURCE_FILES src/comparison.cpp src/generalTools.cpp src/utilities.cpp src/generateMsg.cpp)
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 include_directories(include)

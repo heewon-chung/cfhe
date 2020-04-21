@@ -12,6 +12,7 @@
 
 using namespace std;
 using namespace NTL;
+using namespace helib;
 
 long vector2Long(vector<ZZX>&, long);
 long vector2Long(vector<long>&, long);

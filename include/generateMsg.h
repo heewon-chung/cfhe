@@ -9,6 +9,7 @@
 
 using namespace std;
 using namespace NTL;
+using namespace helib;
 
 void generateProblemInstance(vector<long>&, const long, const long);
 void generateProblemInstance(vector<vector<long>>&, const long, const long, const long);

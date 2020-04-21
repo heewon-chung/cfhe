@@ -10,6 +10,9 @@
 #include <helib/EncryptedArray.h>
 #include <helib/Ctxt.h>
 
+using namespace std;
+using namespace helib;
+
 #define TIMER std::chrono::time_point<std::chrono::steady_clock>
 #define TIC chrono::steady_clock::now()
 #define TOC chrono::steady_clock::now()

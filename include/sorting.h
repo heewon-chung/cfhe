@@ -13,6 +13,10 @@
 #include "arithmetic.h"
 #include "generalTools.h"
 
+
+using namespace std;
+using namespace helib;
+
 void swap(vector<helib::Ctxt>&, vector<helib::Ctxt>&, const vector<helib::Ctxt>&, const vector<helib::Ctxt>&, const long, const helib::EncryptedArray&);
 void directSort(vector<vector<helib::Ctxt>>&, vector<vector<helib::Ctxt>>&, const long, const helib::EncryptedArray&);
 
