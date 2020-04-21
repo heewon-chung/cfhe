@@ -7,8 +7,8 @@
 
 #include "NTL/ZZX.h"
 
-#include "../../helib_install/helib_pack/include/helib/EncryptedArray.h"
-#include "../../helib_install/helib_pack/include/helibCtxt.h"
+#include <helib/EncryptedArray.h>
+#include <helib/Ctxt.h>
 
 #define TIMER std::chrono::time_point<std::chrono::steady_clock>
 #define TIC chrono::steady_clock::now()
