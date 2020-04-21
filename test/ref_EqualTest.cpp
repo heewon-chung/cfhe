@@ -129,7 +129,7 @@ int main(int argc, char* argv[]){
     ea.encrypt(intCtxt2, publicKey, bitMsg2);
 
     start = TIC;
-    equalityTestOverZ(equalCt, intCtxt1, intCtxt2, numSlots, ea);
+    equalityTestOverZ(equalCt, intCtxt1, intCtxt2, bitLength, ea);
 	end = TOC;
     cout << "\nTime per integers equality test: " << get_time_us(start, end, 1) << " microsec" << std::endl;    
     cout << "Equal Levels Left: " << equalCt.findBaseLevel() << endl;

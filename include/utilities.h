@@ -7,7 +7,7 @@
 
 #include "NTL/ZZX.h"
 
-#include "EncryptedArray.h"
+#include <helib/EncryptedArray.h>
 
 #define TIMER std::chrono::time_point<std::chrono::steady_clock>
 #define TIC chrono::steady_clock::now()

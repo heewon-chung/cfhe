@@ -8,8 +8,8 @@
 //#include "../../../Library/HElib-master/src/EncryptedArray.h"
 //#include "../../../Library/HElib-master/src/Ctxt.h"
 
-#include "EncryptedArray.h"
-#include "Ctxt.h"
+#include <helib/EncryptedArray.h>
+#include <helib/Ctxt.h>
 
 #include "utilities.h"
 

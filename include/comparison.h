@@ -4,8 +4,8 @@
 #include <cstdlib>
 #include <vector>
 
-#include "EncryptedArray.h"
-#include "FHE.h"
+#include <helib/EncryptedArray.h>
+#include <helib/FHE.h>
 #include "utilities.h"
 
 void equalityTestOverZ(Ctxt&, const Ctxt&, const Ctxt&, const long, const EncryptedArray&);

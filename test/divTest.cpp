@@ -1,9 +1,6 @@
 #include <cstdlib>
 #include <vector>
 
-//#include "../../../Library/HElib-master/src/EncryptedArray.h"
-//#include "../../../Library/HElib-master/src/Ctxt.h"
-
 #include "EncryptedArray.h"
 #include "Ctxt.h"
 

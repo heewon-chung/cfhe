@@ -5,8 +5,8 @@
 #include <vector>
 #include <cassert>
 
-#include "EncryptedArray.h"
-#include "Ctxt.h"
+#include <helib/EncryptedArray.h>
+#include <helib.Ctxt.h>
 
 #include "comparison.h"
 
