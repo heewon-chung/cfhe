@@ -11,15 +11,15 @@
 
 // z = (numConst + numCoeff * x) / (denConst + denCoeff * x)
 typedef struct cfObject{
-    Ctxt numConst;
-    Ctxt numCoeff;
-    Ctxt denConst;
-    Ctxt denCoeff;
+    helib::Ctxt numConst;
+    helib::Ctxt numCoeff;
+    helib::Ctxt denConst;
+    helib::Ctxt denCoeff;
 } CFObject;
 
-inline void intake(cfObject&, const Ctxt&);
+inline void intake(cfObject&, const helib::Ctxt&);
 inline void intakeInfty(cfObject&);
-inline void outtake(Ctxt&, const cfObject&, const long, const EncryptedArray&);
-void gosper(vector<Ctxt>&, const vector<Ctxt>&, cfObject&, const long, const EncryptedArray&);
+inline void outtake(helib::Ctxt&, const cfObject&, const long, const helib::EncryptedArray&);
+void gosper(vector<helib::Ctxt>&, const vector<helib::Ctxt>&, cfObject&, const long, const helib::EncryptedArray&);
 
 #endif

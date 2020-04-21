@@ -16,12 +16,12 @@
 
 #include "utilities.h"
 
-void fullAdder(Ctxt&, const Ctxt&, const Ctxt&, long&, const EncryptedArray&);
-inline void complement(Ctxt&, const Ctxt&, const EncryptedArray&);
-inline void complement(Ctxt&, const Ctxt&, const long&, const EncryptedArray&);
-inline void twoComplement(Ctxt&, const Ctxt&, long&, const EncryptedArray&);
-void subtract(Ctxt&, Ctxt&, const Ctxt&, const Ctxt&, const long&, const EncryptedArray&);
-void restoringDivision(Ctxt&, Ctxt&, const Ctxt&, const Ctxt&, const long&, const EncryptedArray&, const FHESecKey&);
-void rationalToCF(vector<Ctxt>&, const Ctxt&, const Ctxt&, const long&, const EncryptedArray&);
+void fullAdder(helib::Ctxt&, const helib::Ctxt&, const helib::Ctxt&, long&, const helib::EncryptedArray&);
+inline void complement(helib::Ctxt&, const helib::Ctxt&, const helib::EncryptedArray&);
+inline void complement(helib::Ctxt&, const helib::Ctxt&, const long&, const helib::EncryptedArray&);
+inline void twoComplement(helib::Ctxt&, const helib::Ctxt&, long&, const helib::EncryptedArray&);
+void subtract(helib::Ctxt&, helib::Ctxt&, const helib::Ctxt&, const helib::Ctxt&, const long&, const helib::EncryptedArray&);
+void restoringDivision(helib::Ctxt&, helib::Ctxt&, const helib::Ctxt&, const helib::Ctxt&, const long&, const helib::EncryptedArray&, const helib::FHESecKey&);
+void rationalToCF(vector<helib::Ctxt>&, const helib::Ctxt&, const helib::Ctxt&, const long&, const helib::EncryptedArray&);
 
 #endif

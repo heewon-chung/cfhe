@@ -13,7 +13,7 @@
 #include "arithmetic.h"
 #include "generalTools.h"
 
-void swap(vector<Ctxt>&, vector<Ctxt>&, const vector<Ctxt>&, const vector<Ctxt>&, const long, const EncryptedArray&);
-void directSort(vector<vector<Ctxt>>&, vector<vector<Ctxt>>&, const long, const EncryptedArray&);
+void swap(vector<helib::Ctxt>&, vector<helib::Ctxt>&, const vector<helib::Ctxt>&, const vector<helib::Ctxt>&, const long, const helib::EncryptedArray&);
+void directSort(vector<vector<helib::Ctxt>>&, vector<vector<helib::Ctxt>>&, const long, const helib::EncryptedArray&);
 
 #endif

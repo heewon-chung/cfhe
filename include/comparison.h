@@ -8,9 +8,9 @@
 #include <helib/FHE.h>
 #include "utilities.h"
 
-void equalityTestOverZ(Ctxt&, const Ctxt&, const Ctxt&, const long, const EncryptedArray&);
-void equalityTestOverR(Ctxt&, const vector<Ctxt>&, const vector<Ctxt>&, const long, const EncryptedArray&);
-void comparisonTestOverZ(Ctxt&, const Ctxt&, const Ctxt&, const bool, const long, const EncryptedArray&);
-void comparisonTestOverR(Ctxt&, const vector<Ctxt>&, const vector<Ctxt>&, const bool, const long, const EncryptedArray&);
+void equalityTestOverZ(helib::Ctxt&, const helib::Ctxt&, const helib::Ctxt&, const long, const helib::EncryptedArray&);
+void equalityTestOverR(helib::Ctxt&, const vector<helib::Ctxt>&, const vector<helib::Ctxt>&, const long, const helib::EncryptedArray&);
+void comparisonTestOverZ(helib::Ctxt&, const helib::Ctxt&, const helib::Ctxt&, const bool, const long, const helib::EncryptedArray&);
+void comparisonTestOverR(helib::Ctxt&, const vector<helib::Ctxt>&, const vector<helib::Ctxt>&, const bool, const long, const helib::EncryptedArray&);
 
 #endif

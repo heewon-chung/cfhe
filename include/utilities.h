@@ -14,10 +14,10 @@
 #define TIC chrono::steady_clock::now()
 #define TOC chrono::steady_clock::now()
 
-void ctxtSum(Ctxt&, const Ctxt&, const long, const EncryptedArray&);
-void ctxtProduct(Ctxt&, const Ctxt&, const long, const EncryptedArray&);
-void reverseCtxtProduct(Ctxt&, const Ctxt&, const long, const EncryptedArray&);
-void fillAllSlots(Ctxt&, const Ctxt&, const vector<long>&, const EncryptedArray&);
+void ctxtSum(helib::Ctxt&, const helib::Ctxt&, const long, const helib::EncryptedArray&);
+void ctxtProduct(helib::Ctxt&, const helib::Ctxt&, const long, const helib::EncryptedArray&);
+void reverseCtxtProduct(helib::Ctxt&, const helib::Ctxt&, const long, const helib::EncryptedArray&);
+void fillAllSlots(helib::Ctxt&, const helib::Ctxt&, const vector<long>&, const helib::EncryptedArray&);
 
 void printSettings(long, long, long, long, long);
 void printSettings(long, long, long);
@@ -28,7 +28,7 @@ double get_time_us( std::chrono::time_point<std::chrono::steady_clock> & start,
 					std::chrono::time_point<std::chrono::steady_clock> & end, 
 					uint32_t N=1);
 
-void addTree(vector<Ctxt>&, Ctxt&);
-void mulTree(vector<Ctxt>&, Ctxt&);
+void addTree(vector<helib::Ctxt>&, helib::Ctxt&);
+void mulTree(vector<helib::Ctxt>&, helib::Ctxt&);
 
 #endif
