@@ -5,9 +5,8 @@
 #include <vector>
 #include <cassert>
 
-#include <helib/EncryptedArray.h>
-#include <helib.Ctxt.h>
-
+#include "../../helib_install/helib_pack/include/EncryptedArray.h"
+#include "../../helib_install/helib_pack/include/Ctxt.h"
 #include "comparison.h"
 
 // z = (numConst + numCoeff * x) / (denConst + denCoeff * x)
