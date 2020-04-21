@@ -31,7 +31,6 @@ void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<
     const PubKey&    publicKey = ctxt1[0].getPubKey();
     // vector<Ctxt>        equalPQ(numPQ, publicKey);
 	vector<Ctxt>        equalPQ(numPQ);
-
     #pragma omp parallel for
     for(unsigned long i = 0; i < numPQ; i++){
         equalityTestOverZ(equalPQ[i], ctxt1[i], ctxt2[i], lengthPQ, ea);
@@ -95,13 +94,12 @@ void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector
                         prodCt(publicKey);
     vector<Ctxt>        equalPQ(numPQ), 
                         cmpCtxt(numPQ);
-    vector<Ctxt>    
-    vector<long>        tempVector;
+    vector<long>        extractFirstVector;
     ZZX                 extractFirstPoly;
 
-    tempVector.push_back(1);
-    tempVector.resize(ea.size());
-    ea.encode(extractFirstPoly, tempVector);
+    extractFirstVector.push_back(1);
+    extractFirstVector.resize(ea.size());
+    ea.encode(extractFirstPoly, extractFirstVector);
 
     #pragma omp parallel for
     for(unsigned long i = 0; i < numPQ; i++){
