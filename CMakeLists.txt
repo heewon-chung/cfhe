@@ -22,6 +22,7 @@ include_directories(${HELIB_SOURCE_DIRECTORY})
 include_directories(include)
 include_directories(lib)
 include_directories(lib/ntl-10.3.0/include)
+include_directories("../../helib_install/helib_pack/include/helib")
 
 add_subdirectory(lib)
 
