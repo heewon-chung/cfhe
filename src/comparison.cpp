@@ -29,6 +29,9 @@ void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<
 
     long                numPQ = ctxt1.size();
     const PubKey&    publicKey = ctxt1[0].getPubKey();
+    vector<Ctxt>    equalPQ; equalPQ.resize(numPQ);
+    // CtPtrs_vectorCt result_wrapper(equalPQ);
+  
     // vector<Ctxt>        equalPQ(numPQ, publicKey);
 	vector<Ctxt>        equalPQ(publicKey, numPQ);
     #pragma omp parallel for
