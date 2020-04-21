@@ -6,8 +6,8 @@
 #include <cassert>
 #include <cmath>
 
-#include "../helib_install/helib_pack/include/helib/EncryptedArray.h"
-#include "../helib_install/helib_pack/include/helib/Ctxt.h"
+#include "../../helib_install/helib_pack/include/helib/EncryptedArray.h"
+#include "../../helib_install/helib_pack/include/helib/Ctxt.h"
 #include "utilities.h"
 #include "comparison.h"
 #include "arithmetic.h"

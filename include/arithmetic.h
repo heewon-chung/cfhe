@@ -8,8 +8,8 @@
 //#include "../../../Library/HElib-master/src/EncryptedArray.h"
 //#include "../../../Library/HElib-master/src/Ctxt.h"
 
-#include "../helib_install/helib_pack/include/helib/EncryptedArray.h"
-#include "../helib_install/helib_pack/include/helib/Ctxt.h"
+#include "../../helib_install/helib_pack/include/helib/EncryptedArray.h"
+#include "../../helib_install/helib_pack/include/helib/Ctxt.h"
 
 #include "utilities.h"
 
