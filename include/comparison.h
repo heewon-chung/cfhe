@@ -10,7 +10,7 @@
 
 using namespace std;
 using namespace helib;
-usign namespace NTL;
+using namespace NTL;
 
 void equalityTestOverZ(helib::Ctxt&, const helib::Ctxt&, const helib::Ctxt&, const long, const helib::EncryptedArray&);
 void equalityTestOverR(helib::Ctxt&, const vector<helib::Ctxt>&, const vector<helib::Ctxt>&, const long, const helib::EncryptedArray&);
