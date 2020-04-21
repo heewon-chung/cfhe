@@ -28,7 +28,7 @@ void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<
     assert(ctxt1.size() == ctxt2.size());
 
     long                numPQ = ctxt1.size();
-    const FHEPubKey&    publicKey = ctxt1[0].getPubKey();
+    const PubKey&    publicKey = ctxt1[0].getPubKey();
     vector<Ctxt>        equalPQ(numPQ, publicKey);
 	
     #pragma omp parallel for
@@ -89,7 +89,7 @@ void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector
     
     const bool          greaterThan = 1 - lessThan;
     long                numPQ = ctxt1.size();
-    const FHEPubKey&    publicKey = ctxt1[0].getPubKey();
+    const PubKey&    publicKey = ctxt1[0].getPubKey();
     Ctxt                equalCt(publicKey), 
                         prodCt(publicKey);
     vector<Ctxt>        equalPQ(numPQ, publicKey), 
