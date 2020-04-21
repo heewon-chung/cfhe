@@ -5,6 +5,7 @@
 #include <cassert>
 #include <chrono>
 
+#include "NTL/ZZ.h"
 #include "NTL/ZZX.h"
 
 #include <helib/EncryptedArray.h>
