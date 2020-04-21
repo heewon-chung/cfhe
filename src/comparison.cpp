@@ -92,8 +92,9 @@ void comparisonTestOverR(Ctxt& compCtxt, const vector<Ctxt>& ctxt1, const vector
     const PubKey&    publicKey = ctxt1[0].getPubKey();
     Ctxt                equalCt(publicKey), 
                         prodCt(publicKey);
-    vector<Ctxt>        equalPQ(numPQ, publicKey), 
-                        cmpCtxt(numPQ, publicKey);
+    vector<Ctxt>        equalPQ(numPQ), 
+                        cmpCtxt(numPQ);
+    vector<Ctxt>    
     vector<long>        extractFirstVector;
     ZZX                 extractFirstPoly;
 
