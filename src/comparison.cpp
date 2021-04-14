@@ -27,7 +27,7 @@ void equalityTestOverR(Ctxt& equalCtxt, const vector<Ctxt>& ctxt1, const vector<
     assert(&ctxt1[0].getPubKey() == &ctxt2[0].getPubKey());
     assert(ctxt1.size() == ctxt2.size());
 
-    long                numPQ = ctxt1.size();
+    long             numPQ = ctxt1.size();
     const PubKey&    publicKey = ctxt1[0].getPubKey();
     vector<Ctxt>    equalPQ; 
     equalPQ.resize(numPQ);
